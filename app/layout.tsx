@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Header from "@/components/Header";
 // import Providers from "@/components/Providers";
 // import HeaderWrapper from "@/components/HeaderWrapper";
 // import { Toaster } from "react-hot-toast";
@@ -24,6 +25,7 @@ export default async function RootLayout({
       className="h-full antialiased font-poppins"
     >
       <body className="min-h-full flex flex-col">
+        <Header />
         <main className='w-[95%] md:w-[90%] mx-auto'>
           {children}
         </main>
