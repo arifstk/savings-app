@@ -23,7 +23,7 @@ export async function verifyOtpHash(plain: string, hashed: string): Promise<bool
 export async function saveOtp(email: string, otp: string): Promise<void> {
   await dbConnect();
   const hashed = await hashOtp(otp);
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
   // Replace existing OTP for this email (upsert)
   await Otp.findOneAndUpdate(
@@ -41,7 +41,7 @@ export async function sendOtpEmail(email: string, otp: string): Promise<void> {
     html: `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
         <h2 style="color: #1c1917;">Login Verification</h2>
-        <p style="color: #57534e;">Use the code below to complete your login. It expires in <strong>10 minutes</strong>.</p>
+        <p style="color: #57534e;">Use the code below to complete your login. It expires in <strong>5 minutes</strong>.</p>
         
         <div style="background: #f5f5f4; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
           <p style="margin: 0 0 8px; color: #78716c; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;">Your OTP Code</p>

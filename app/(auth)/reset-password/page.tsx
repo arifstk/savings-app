@@ -70,7 +70,7 @@ function ResetPasswordForm() {
       eyebrow="Reset password"
       title="Choose a new password"
       footer={
-        <Link href="/login" className="text-amber-500 hover:text-amber-400 font-medium">
+        <Link href="/login" className="text-gray-500 hover:text-gray-700 font-medium">
           Back to log in
         </Link>
       }
@@ -79,7 +79,7 @@ function ResetPasswordForm() {
         <input type="hidden" {...register("token")} value={token} />
 
         <div>
-          <label htmlFor="password" className="block text-sm text-stone-300 mb-1.5">
+          <label htmlFor="password" className="block text-sm text-gray-500 mb-1.5">
             New password
           </label>
           <input
@@ -87,7 +87,7 @@ function ResetPasswordForm() {
             type="password"
             autoComplete="new-password"
             {...register("password")}
-            className="w-full bg-stone-950 border border-stone-700 focus:border-amber-500 outline-none rounded-lg px-3.5 py-2.5 text-stone-50 placeholder:text-stone-600 transition"
+            className="w-full border border-stone-300 focus:border-amber-500 outline-none rounded-lg px-3.5 py-2.5 text-gray-700 placeholder:text-stone-400 transition"
             placeholder="At least 8 characters"
           />
           {errors.password && (
@@ -96,7 +96,7 @@ function ResetPasswordForm() {
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm text-stone-300 mb-1.5">
+          <label htmlFor="confirmPassword" className="block text-sm text-gray-500 mb-1.5">
             Confirm new password
           </label>
           <input
@@ -104,7 +104,7 @@ function ResetPasswordForm() {
             type="password"
             autoComplete="new-password"
             {...register("confirmPassword")}
-            className="w-full bg-stone-950 border border-stone-700 focus:border-amber-500 outline-none rounded-lg px-3.5 py-2.5 text-stone-50 placeholder:text-stone-600 transition"
+            className="w-full border border-gray-300 focus:border-amber-500 outline-none rounded-lg px-3.5 py-2.5 text-gray-700 placeholder:text-gray-400 transition"
             placeholder="Re-enter your new password"
           />
           {errors.confirmPassword && (
@@ -115,7 +115,7 @@ function ResetPasswordForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed text-stone-950 font-semibold py-2.5 rounded-lg transition"
+          className="w-full bg-black hover:bg-black/90 text-white disabled:opacity-60 disabled:cursor-not-allowed  font-semibold py-2.5 rounded-lg transition cursor-pointer"
         >
           {submitting ? "Resetting…" : "Reset password"}
         </button>

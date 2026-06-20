@@ -1,5 +1,3 @@
-
-
 export default function AuthCard({
   eyebrow,
   title,
