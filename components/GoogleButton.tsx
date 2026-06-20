@@ -7,7 +7,7 @@ export default function GoogleButton({ label = "Continue with Google" }: { label
     <button
       type="button"
       onClick={() => signIn("google", { callbackUrl: "/" })}
-      className="w-full flex items-center justify-center gap-3 border border-stone-700 hover:border-stone-500 bg-stone-950 hover:bg-stone-800/50 text-stone-100 font-medium py-2.5 rounded-lg transition"
+      className="w-full flex items-center justify-center gap-3 border border-stone-700 hover:border-stone-500 bg-stone-950 hover:bg-stone-800/50 text-stone-100 font-medium py-2.5 rounded-lg transition cursor-pointer"
     >
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
         <path
