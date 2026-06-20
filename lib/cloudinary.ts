@@ -1,4 +1,4 @@
-import 'server-only';
+// import 'server-only';
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
