@@ -23,8 +23,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         otpVerified: { label: "Verified", type: "text" },
       },
       async authorize(credentials) {
-        // OTP was already verified by /api/auth/verify-otp.
-        // We just need to look up the user and return them.
         if (!credentials?.otpEmail) {
           throw new Error("Email is required");
         }
@@ -42,8 +40,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user._id.toString(),
           name: user.name,
           email: user.email,
-          image: user.image,
+          image: user.image || null,
           role: user.role,
+          mobile: user.mobile,
+          provider: user.provider,
         };
       },
     }),
@@ -74,15 +74,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         user.role = existingUser.role;
         user.id = existingUser._id.toString();
+        user.mobile = existingUser.mobile;
+        user.provider = existingUser.provider;
       }
       return true;
     },
-    async jwt({ token, user }) {
+    //     async jwt({ token, user }) {
+    //       if (user) {
+    //         token.id = user.id;
+    //         token.role = ((user as { role?: string }).role ?? "user") as
+    //           | "admin"
+    //           | "user";
+    //       }
+    //       return token;
+    //     },
+    //     async session({ session, token }) {
+    //       if (session.user) {
+    //         session.user.id = token.id as string;
+    //         session.user.role = (token.role ?? "user") as "admin" | "user";
+    //       }
+    //       return session;
+    //     },
+    //   },
+    // });
+
+    async jwt({ token, user, trigger, session: updateSession }) {
       if (user) {
         token.id = user.id;
         token.role = ((user as { role?: string }).role ?? "user") as
           | "admin"
           | "user";
+        token.mobile = (user as { mobile?: string }).mobile;
+        token.provider = (user as { provider?: string }).provider;
+      }
+      // Allow session.update() to refresh name/email/image
+      if (trigger === "update" && updateSession) {
+        if (updateSession.name) token.name = updateSession.name;
+        if (updateSession.email) token.email = updateSession.email;
+        if (updateSession.image) token.picture = updateSession.image;
       }
       return token;
     },
@@ -90,10 +119,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = (token.role ?? "user") as "admin" | "user";
+        session.user.mobile = token.mobile as string | undefined;
+        session.user.provider = token.provider as string | undefined;
+        // Sync name/email/image from token into session
+        if (token.name) session.user.name = token.name;
+        if (token.email) session.user.email = token.email;
+        if (token.picture) session.user.image = token.picture;
       }
       return session;
     },
   },
 });
-
-
