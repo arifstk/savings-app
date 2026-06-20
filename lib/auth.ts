@@ -1,4 +1,5 @@
-import NextAuth, { type NextAuthConfig } from "next-auth";
+import NextAuth from "next-auth";
+import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
@@ -15,8 +16,8 @@ export const authConfig: NextAuthConfig = {
   },
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     Credentials({
       name: "Credentials",
@@ -31,9 +32,10 @@ export const authConfig: NextAuthConfig = {
 
         await dbConnect();
 
-        const identifier = (credentials.identifier as string).trim().toLowerCase();
+        const identifier = (credentials.identifier as string)
+          .trim()
+          .toLowerCase();
 
-        // Allow login with either email or mobile number
         const user = await User.findOne({
           $or: [{ email: identifier }, { mobile: credentials.identifier }],
         }).select("+password");
@@ -44,13 +46,13 @@ export const authConfig: NextAuthConfig = {
 
         if (!user.password) {
           throw new Error(
-            "This account was created with Google. Please continue with Google."
+            "This account was created with Google. Please continue with Google.",
           );
         }
 
         const isValid = await bcrypt.compare(
           credentials.password as string,
-          user.password
+          user.password,
         );
 
         if (!isValid) {
@@ -77,9 +79,6 @@ export const authConfig: NextAuthConfig = {
         let existingUser = await User.findOne({ email: user.email });
 
         if (!existingUser) {
-          // Create the user first, then atomically attempt to claim the
-          // single admin slot. Avoids race conditions across simultaneous
-          // first-time sign-ups (Google or credentials).
           existingUser = await User.create({
             name: user.name ?? "Google User",
             email: user.email,
@@ -95,7 +94,6 @@ export const authConfig: NextAuthConfig = {
           }
         }
 
-        // Stamp role onto the user object so the jwt callback can read it
         user.role = existingUser.role;
         user.id = existingUser._id.toString();
       }
