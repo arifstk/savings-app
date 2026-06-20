@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
+import MobileNav from "./MobileNav";
+import Logo from "./Logo";
 
 const Header = () => {
   const { data: session, status } = useSession();
@@ -29,16 +31,16 @@ const Header = () => {
   const initial = session?.user?.name?.charAt(0).toUpperCase() ?? "U";
 
   return (
-    <div className="flex items-center justify-between border-b border-gray-300 py-2">
+    <div className="flex items-center justify-between border-b border-gray-300 py-2 shadow-lg">
       <div className="w-[95%] md:w-[90%] mx-auto flex items-center justify-between">
-
-        {/* Logo */}
-        <div>
-          <h2 className="text-2xl font-bold">Logo</h2>
+        <div className="flex items-center gap-3">
+          <MobileNav />
+          {/* Logo */}
+          <Logo />
         </div>
 
         {/* Links */}
-        <div>All Links</div>
+        <div>All Links Go Here</div>
 
         {/* Right side */}
         <div className="flex items-center gap-3">
@@ -65,7 +67,7 @@ const Header = () => {
             {/* Not logged in */}
             {status === "unauthenticated" && (
               <Link href="/login">
-                <button className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer">
+                <button className="bg-black text-white py-1.5 px-4 rounded-lg cursor-pointer">
                   Login
                 </button>
               </Link>
