@@ -232,7 +232,7 @@ const Header = () => {
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold flex-shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold shrink-0">
                     {initial}
                   </div>
                 )}
@@ -264,11 +264,11 @@ const Header = () => {
                         alt={session.user.name ?? "User"}
                         width={32}
                         height={32}
-                        className="rounded-full object-cover flex-shrink-0"
+                        className="rounded-full object-cover shrink-0"
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold shrink-0">
                         {initial}
                       </div>
                     )}
