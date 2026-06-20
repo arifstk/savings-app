@@ -21,9 +21,6 @@ export async function POST(req: Request) {
 
     const user = await User.findOne({ email });
 
-    // Always return a generic success message, even if the user doesn't
-    // exist or signed up via Google. This prevents attackers from using
-    // this endpoint to discover which emails are registered.
     const genericResponse = NextResponse.json({
       message:
         "If an account with that email exists, a password reset link has been sent.",
