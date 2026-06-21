@@ -7,12 +7,14 @@ import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import MobileNav from "./MobileNav";
 import Logo from "./Logo";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const role = session?.user?.role ?? null;
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -30,6 +32,26 @@ const Header = () => {
   // First letter of name for fallback avatar
   const initial = session?.user?.name?.charAt(0).toUpperCase() ?? "U";
 
+  // Link style
+  const linkStyles = (isActive: boolean) =>
+    `relative group text-sm font-medium transition-colors duration-200 py-1.5 px-1 ${isActive ? "text-indigo-600 font-semibold" : "text-slate-600 hover:text-slate-900"
+    }`;
+
+  // Reusable underline markup component to avoid repetitive code
+  const NavUnderline = ({ isActive }: { isActive: boolean }) => (
+    <>
+      <span
+        className={`absolute -bottom-0.5 right-1/2 h-0.5 bg-indigo-500 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
+          }`}
+      />
+      <span
+        className={`absolute -bottom-0.5 left-1/2 h-0.5 bg-indigo-500 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
+          }`}
+      />
+    </>
+  );
+
+
   return (
     <div className="top-0 left-0 w-full sticky z-500 flex items-center justify-between border-b bg-white border-gray-300 shadow-lg py-1">
       <div className="w-[95%] md:w-[90%] mx-auto flex items-center justify-between">
@@ -40,7 +62,36 @@ const Header = () => {
         </div>
 
         {/* Links */}
-        <div>All Links Go Here</div>
+        <div className="hidden md:flex items-center gap-5">
+          <Link href="/" className={linkStyles(pathname === "/")}>
+            Home
+            <NavUnderline isActive={pathname === "/"} />
+          </Link>
+
+          {(role === "user" || role === "admin") && (
+            <Link href="/my-subscription" className={linkStyles(pathname === "/my-subscription")}>
+              Subscriptions
+              <NavUnderline isActive={pathname === "/my-subscription"} />
+            </Link>
+          )}
+
+          {(role === "user" || role === "admin") && (
+            <Link href="/members" className={linkStyles(pathname === "/members")}>
+              Our Members
+              <NavUnderline isActive={pathname === "/members"} />
+            </Link>
+          )}
+
+          <Link href="/about" className={linkStyles(pathname === "/about")}>
+            About
+            <NavUnderline isActive={pathname === "/about"} />
+          </Link>
+
+          <Link href="/contact" className={linkStyles(pathname === "/contact")}>
+            Contact
+            <NavUnderline isActive={pathname === "/contact"} />
+          </Link>
+        </div>
 
         {/* Right side */}
         <div className="flex items-center gap-3">
