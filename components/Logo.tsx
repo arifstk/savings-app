@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
@@ -5,7 +6,7 @@ const Logo = () => {
   return (
     <div>
       <Link href={'/'}>
-        <h2 className='text-2xl font-bold'>Logo</h2>
+        <Image src={"/images/Logo.png"} width={80} height={20} alt="logo" priority/>
       </Link>
     </div>
   )
