@@ -69,16 +69,16 @@ const Header = () => {
           </Link>
 
           {(role === "user" || role === "admin") && (
-            <Link href="/my-subscription" className={linkStyles(pathname === "/my-subscription")}>
+            <Link href="/my-subscriptions" className={linkStyles(pathname === "/my-subscriptions")}>
               Subscriptions
-              <NavUnderline isActive={pathname === "/my-subscription"} />
+              <NavUnderline isActive={pathname === "/my-subscriptions"} />
             </Link>
           )}
 
           {(role === "user" || role === "admin") && (
-            <Link href="/members" className={linkStyles(pathname === "/members")}>
+            <Link href="/our-members" className={linkStyles(pathname === "/our-members")}>
               Our Members
-              <NavUnderline isActive={pathname === "/members"} />
+              <NavUnderline isActive={pathname === "/our-members"} />
             </Link>
           )}
 

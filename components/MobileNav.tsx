@@ -90,8 +90,8 @@ const MobileNav = () => {
 
           {(role === "user" || role === "admin") && (
             <Link
-              href="/my-subscription"
-              className={linkStyles(pathname === "/my-subscription")}
+              href="/my-subscriptions"
+              className={linkStyles(pathname === "/my-subscriptions")}
             >
               Subscriptions
             </Link>
@@ -99,8 +99,8 @@ const MobileNav = () => {
 
           {(role === "user" || role === "admin") && (
             <Link
-              href="/members"
-              className={linkStyles(pathname === "/members")}
+              href="/our-members"
+              className={linkStyles(pathname === "/our-members")}
             >
               Our Members
             </Link>
