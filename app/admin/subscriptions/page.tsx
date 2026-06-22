@@ -51,7 +51,7 @@ export default function SubscriptionsPage() {
   return (
     <div>
       {/* Page header */}
-      <div className="mb-6">
+      <div className="mb-6 pt-4">
         <h1 className="text-xl font-bold text-gray-900">Subscriptions</h1>
         <p className="text-sm text-gray-500 mt-0.5">
           Total subscription amount collected from all users
@@ -68,7 +68,7 @@ export default function SubscriptionsPage() {
           <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Users with Subscriptions</p>
           <p className="text-2xl font-bold text-gray-900">{rows.filter((r) => r.total > 0).length}</p>
         </div>
-        <div className="bg-green-50 rounded-2xl border border-green-200 shadow-sm px-5 py-4">
+        <div className="bg-sky-100 rounded-2xl border border-sky-200 shadow-sm px-5 py-4">
           <p className="text-xs text-green-600 uppercase tracking-wide mb-1">Grand Total</p>
           <p className="text-2xl font-bold text-green-700">{fmtTaka(grandTotal)}</p>
         </div>
@@ -86,7 +86,7 @@ export default function SubscriptionsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -134,7 +134,7 @@ export default function SubscriptionsPage() {
               {/* Grand Total row */}
               {filtered.length > 0 && (
                 <tfoot>
-                  <tr className="bg-green-50 border-t-2 border-green-200">
+                  <tr className="bg-sky-100 border-t- border-sky-200">
                     <td colSpan={3}
                       className="px-5 py-4 text-sm font-bold text-gray-700 text-right">
                       Total =
