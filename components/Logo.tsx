@@ -18,7 +18,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 // 1. Statically import the image asset
-import LogoImg from '../../public/images/Logo.png' 
+import LogoImg from '../public/images/Logo.png' 
 
 const Logo = () => {
   return (
