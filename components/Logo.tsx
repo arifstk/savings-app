@@ -6,10 +6,11 @@ const Logo = () => {
   return (
     <div>
       <Link href={'/'}>
-        <Image src={"/images/Logo.png"} width={80} height={20} alt="logo" priority/>
+        <Image src="/images/logo.png" width={80} height={20} alt="logo" priority/>
       </Link>
     </div>
   )
 }
 
 export default Logo
+
