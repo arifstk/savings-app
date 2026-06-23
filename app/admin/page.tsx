@@ -332,10 +332,9 @@ export default function AdminPage() {
               <hr className="border-gray-100" />
 
               {/* Subscription Section */}
-              <div>
+              {/* <div>
                 <h3 className="text-sm font-semibold text-gray-700 mb-3">Subscriptions</h3>
-
-                {/* Add New Row */}
+                
                 <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4">
                   <p className="text-xs font-medium text-blue-700 mb-3">Add New Entry</p>
                   <div className="grid grid-cols-3 gap-3">
@@ -380,7 +379,7 @@ export default function AdminPage() {
                   </button>
                 </div>
 
-                {/* Subscription Table */}
+                
                 {subsLoading ? (
                   <div className="flex justify-center py-8">
                     <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -484,7 +483,7 @@ export default function AdminPage() {
                         ))}
                       </tbody>
 
-                      {/* Total Row */}
+                      
                       {subs.length > 0 && (
                         <tfoot>
                           <tr className="bg-gray-50 border-t-2 border-gray-200">
@@ -499,7 +498,7 @@ export default function AdminPage() {
                     </table>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
