@@ -10,17 +10,16 @@ export async function POST(
   try {
     const session = await auth();
     if (!session?.user || session.user.role !== "admin")
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); 
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
     await dbConnect();
 
     const period = await SubscriptionPeriod.findById(id);
-    if (!period) return NextResponse.json({ error: "Period not found" }, { status: 404 });
-    if (period.status === "closed")
-      return NextResponse.json({ error: "Period already closed" }, { status: 400 });
+    if (!period) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (period.status === "closed") return NextResponse.json({ error: "Already closed" }, { status: 400 });
 
-    period.status   = "closed";
+    period.status = "closed";
     period.closedAt = new Date();
     await period.save();
 

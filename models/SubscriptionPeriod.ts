@@ -1,13 +1,10 @@
 import { Schema, models, model, Document } from "mongoose";
 
-export type PeriodStatus = "open" | "closed";
-
 export interface ISubscriptionPeriod extends Document {
-  name: string;           // e.g. "July 2026"
-  startDate: Date;
-  endDate: Date;
-  defaultFee: number;     // default monthly fee in Taka
-  status: PeriodStatus;
+  name: string;
+  startMonth: string; // "2026-07"
+  endMonth: string;   // "2027-02"
+  status: "open" | "closed";
   closedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -15,12 +12,11 @@ export interface ISubscriptionPeriod extends Document {
 
 const SubscriptionPeriodSchema = new Schema<ISubscriptionPeriod>(
   {
-    name: { type: String, required: true, trim: true },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
-    defaultFee: { type: Number, required: true, min: 0 },
-    status: { type: String, enum: ["open", "closed"], default: "open" },
-    closedAt: { type: Date },
+    name:       { type: String, required: true, trim: true },
+    startMonth: { type: String, required: true }, // YYYY-MM
+    endMonth:   { type: String, required: true }, // YYYY-MM
+    status:     { type: String, enum: ["open", "closed"], default: "open" },
+    closedAt:   { type: Date },
   },
   { timestamps: true }
 );

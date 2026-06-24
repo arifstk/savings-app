@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import SubscriptionPeriod from "@/models/SubscriptionPeriod";
-import SubscriptionEntry from "@/models/SubscriptionEntry";
+import MonthlyPayment from "@/models/MonthlyPayment";
+import PeriodUserFee from "@/models/PeriodUserFee";
 import User from "@/models/User";
 
 export async function GET(
@@ -18,25 +19,29 @@ export async function GET(
     await dbConnect();
 
     const period = await SubscriptionPeriod.findById(id).lean();
-    if (!period) return NextResponse.json({ error: "Period not found" }, { status: 404 });
+    if (!period) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-    // Get all entries for this period, joined with user info
-    const entries = await SubscriptionEntry.find({ periodId: id }).lean();
-    const userIds = entries.map((e) => e.userId);
-    const users   = await User.find({ _id: { $in: userIds } }).select("name email mobile").lean();
-    const userMap: Record<string, { name: string; email: string; mobile?: string }> = {};
-    users.forEach((u) => { userMap[u._id.toString()] = u; });
+    // All users
+    const users = await User.find({
+      $or: [{ isVerified: true }, { isVerified: { $exists: false } }],
+    }).select("name email mobile").sort({ name: 1 }).lean();
 
-    const enrichedEntries = entries.map((e) => ({
-      ...e,
-      user: userMap[e.userId.toString()] ?? { name: "Unknown", email: "" },
-    }));
+    // User fees for this period
+    const fees = await PeriodUserFee.find({ periodId: id }).lean();
+    const feeMap: Record<string, number> = {};
+    fees.forEach(f => { feeMap[f.userId.toString()] = f.fee; });
 
-    const totalCollected = entries.filter((e) => e.status === "paid").reduce((s, e) => s + e.fee, 0);
-    const totalPending   = entries.filter((e) => e.status === "pending").reduce((s, e) => s + e.fee, 0);
-    const grandTotal     = totalCollected + totalPending;
+    // All payments for this period
+    const payments = await MonthlyPayment.find({ periodId: id }).lean();
 
-    return NextResponse.json({ period, entries: enrichedEntries, totalCollected, totalPending, grandTotal });
+    // Group payments by month
+    const monthsOpened = [...new Set(payments.map(p => p.month))].sort();
+
+    // Build payment lookup: userId_month → payment
+    const paymentMap: Record<string, typeof payments[0]> = {};
+    payments.forEach(p => { paymentMap[`${p.userId}_${p.month}`] = p; });
+
+    return NextResponse.json({ period, users, feeMap, monthsOpened, paymentMap });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
@@ -61,7 +66,8 @@ export async function DELETE(
       return NextResponse.json({ error: "Cannot delete a closed period" }, { status: 400 });
 
     await SubscriptionPeriod.findByIdAndDelete(id);
-    await SubscriptionEntry.deleteMany({ periodId: id });
+    await MonthlyPayment.deleteMany({ periodId: id });
+    await PeriodUserFee.deleteMany({ periodId: id });
 
     return NextResponse.json({ message: "Deleted" });
   } catch (err) {

@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import SubscriptionPeriod from "@/models/SubscriptionPeriod";
-import SubscriptionEntry from "@/models/SubscriptionEntry";
-import User from "@/models/User";
+import MonthlyPayment from "@/models/MonthlyPayment";
 
 export async function GET() {
   try {
@@ -12,39 +11,22 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     await dbConnect();
+    const periods = await SubscriptionPeriod.find().sort({ createdAt: -1 }).lean();
 
-    const periods = await SubscriptionPeriod.find()
-      .sort({ createdAt: -1 })
-      .lean();
-
-    // Attach summary counts to each period
-    const enriched = await Promise.all(
-      periods.map(async (p) => {
-        const entries = await SubscriptionEntry.find({
-          periodId: p._id,
-        }).lean();
-        const totalCollected = entries
-          .filter((e) => e.status === "paid")
-          .reduce((s, e) => s + e.fee, 0);
-        const totalPending = entries
-          .filter((e) => e.status === "pending")
-          .reduce((s, e) => s + e.fee, 0);
-        return {
-          ...p,
-          totalCollected,
-          totalPending,
-          userCount: entries.length,
-        };
-      }),
-    );
+    // Attach quick stats per period
+    const enriched = await Promise.all(periods.map(async (p) => {
+      const payments = await MonthlyPayment.find({ periodId: p._id }).lean();
+      const collected = payments.filter(x => x.status === "paid").reduce((s, x) => s + x.fee, 0);
+      const pending   = payments.filter(x => x.status === "pending").reduce((s, x) => s + x.fee, 0);
+      // Unique months opened so far
+      const openedMonths = [...new Set(payments.map(x => x.month))].sort();
+      return { ...p, collected, pending, openedMonths };
+    }));
 
     return NextResponse.json({ periods: enriched });
   } catch (err) {
     console.error(err);
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
 
@@ -54,55 +36,17 @@ export async function POST(req: Request) {
     if (!session?.user || session.user.role !== "admin")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { name, startDate, endDate, defaultFee } = await req.json();
-
-    if (!name || !startDate || !endDate || defaultFee == null)
-      return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 },
-      );
-
-    if (defaultFee < 0)
-      return NextResponse.json(
-        { error: "Fee cannot be negative" },
-        { status: 400 },
-      );
+    const { name, startMonth, endMonth } = await req.json();
+    if (!name || !startMonth || !endMonth)
+      return NextResponse.json({ error: "Name, start month and end month are required" }, { status: 400 });
+    if (startMonth > endMonth)
+      return NextResponse.json({ error: "Start month must be before end month" }, { status: 400 });
 
     await dbConnect();
-
-    const period = await SubscriptionPeriod.create({
-      name,
-      startDate,
-      endDate,
-      defaultFee,
-      status: "open",
-    });
-
-    // Auto-create a pending entry for every user
-    // Include users where isVerified is true OR field doesn't exist (old accounts)
-    const users = await User.find({
-      $or: [{ isVerified: true }, { isVerified: { $exists: false } }],
-    })
-      .select("_id")
-      .lean();
-    if (users.length > 0) {
-      await SubscriptionEntry.insertMany(
-        users.map((u) => ({
-          periodId: period._id,
-          userId: u._id,
-          fee: defaultFee,
-          status: "pending",
-        })),
-        { ordered: false },
-      );
-    }
-
+    const period = await SubscriptionPeriod.create({ name, startMonth, endMonth, status: "open" });
     return NextResponse.json({ period }, { status: 201 });
   } catch (err) {
     console.error(err);
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
