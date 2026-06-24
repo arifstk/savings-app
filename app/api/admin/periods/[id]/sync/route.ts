@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import SubscriptionPeriod from "@/models/SubscriptionPeriod";
-import SubscriptionEntry from "@/models/SubscriptionEntry";
+// import SubscriptionEntry from "@/models/SubscriptionEntry";
 import User from "@/models/User";
+import PeriodUserFee from "@/models/PeriodUserFee";
 
 // POST /api/admin/periods/[id]/sync
 // Adds missing entries for any users not yet in this period
@@ -28,14 +29,14 @@ export async function POST(
     }).select("_id").lean();
 
     // Get users already having an entry for this period
-    const existing = await SubscriptionEntry.find({ periodId: id }).select("userId").lean();
+    const existing = await PeriodUserFee.find({ periodId: id }).select("userId").lean();
     const existingIds = new Set(existing.map((e) => e.userId.toString()));
 
     // Only insert for missing users
     const missing = allUsers.filter((u) => !existingIds.has(u._id.toString()));
 
     if (missing.length > 0) {
-      await SubscriptionEntry.insertMany(
+      await PeriodUserFee.insertMany(
         missing.map((u) => ({
           periodId: period._id,
           userId: u._id,
