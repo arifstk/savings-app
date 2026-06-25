@@ -1,4 +1,31 @@
 @import "tailwindcss";
+
+@theme inline {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+body {
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+}
+
+/* Hide all chrome on print pages */
+body[data-page="print"] nav,
+body[data-page="print"] header,
+body[data-page="print"] aside,
+body[data-page="print"] .admin-sidebar {
+  display: none !important;
+}
+
+body[data-page="print"] main {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 /* 
 :root {
   --background: #ffffff;

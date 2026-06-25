@@ -16,6 +16,9 @@ const Header = () => {
   const role = session?.user?.role ?? null;
   const pathname = usePathname();
 
+  // Hide header on print pages
+  if (pathname.endsWith("/print")) return null;
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {

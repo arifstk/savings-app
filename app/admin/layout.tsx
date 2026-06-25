@@ -65,6 +65,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (status === "authenticated" && session?.user?.role !== "admin") router.replace("/");
   }, [status, session, router]);
 
+  // Print pages render with no chrome at all
+  if (pathname.endsWith("/print")) {
+    return <>{children}</>;
+  }
+
   if (status === "loading") return (
     <div className="flex-1 flex items-center justify-center min-h-screen">
       <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />

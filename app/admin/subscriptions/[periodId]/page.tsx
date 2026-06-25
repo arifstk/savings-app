@@ -159,7 +159,7 @@ export default function PeriodDetailPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-start justify-between pt-6 mb-6">
         <div>
           <Link href="/admin/subscriptions" className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1 mb-2">
             ← Back to Periods
@@ -241,30 +241,30 @@ export default function PeriodDetailPage() {
             </button>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">#</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Name</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Mobile</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Monthly Fee (Taka)</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Action</th>
+                  <th className="text-left px-2 py-3 text-xs font-semibold text-gray-500">#</th>
+                  <th className="text-left px-2 py-3 text-xs font-semibold text-gray-500">Name</th>
+                  <th className="text-left px-2 py-3 text-xs font-semibold text-gray-500">Mobile</th>
+                  <th className="text-left px-2 py-3 text-xs font-semibold text-gray-500">Monthly Fee (Taka)</th>
+                  <th className="text-left px-2 py-3 text-xs font-semibold text-gray-500">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {users.map((u, idx) => (
                   <tr key={u._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-gray-400 text-xs">{idx + 1}</td>
-                    <td className="px-4 py-3 font-medium text-gray-800">{u.name}</td>
-                    <td className="px-4 py-3 text-gray-500">{u.mobile || "—"}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-1 py-3 text-gray-400 text-xs">{idx + 1}</td>
+                    <td className="px-1 py-3 font-medium text-gray-800">{u.name}</td>
+                    <td className="px-1 py-3 text-gray-500">{u.mobile || "—"}</td>
+                    <td className="px-1 py-3">
                       <input type="number" placeholder="0" value={editFees[u._id] ?? ""}
                         onChange={e => setEditFees(prev => ({ ...prev, [u._id]: e.target.value }))}
                         className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-1.5 py-3">
                       <button onClick={() => saveFee(u._id)} disabled={savingFee === u._id}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-3 py-1.5 rounded-lg cursor-pointer disabled:opacity-60">
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-1.5 py-1.5 rounded-lg cursor-pointer disabled:opacity-60">
                         {savingFee === u._id ? "…" : "Save"}
                       </button>
                     </td>
@@ -280,7 +280,7 @@ export default function PeriodDetailPage() {
       {activeTab === "payments" && (
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
           {openedMonths.length === 0 ? (
-            <div className="text-center py-16 text-gray-400 text-sm">
+            <div className="text-center py-16 text-gray-400 text-xs">
               No months opened yet. Use "Open Next Month" above to start collecting payments.
             </div>
           ) : (
@@ -288,15 +288,15 @@ export default function PeriodDetailPage() {
               <table className="text-sm border-collapse w-full">
                 <thead>
                   <tr className="bg-gray-900 text-white">
-                    <th className="px-4 py-3 text-left text-xs font-semibold whitespace-nowrap sticky left-0 bg-gray-900 z-10">#</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold whitespace-nowrap sticky left-8 bg-gray-900 z-10 min-w-37">Name</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold whitespace-nowrap min-w-37">Mobile</th>
+                    <th className="px-1.5 py-3 text-left text-xs font-semibold whitespace-nowrap sticky left-0 bg-gray-900 z-10">#</th>
+                    <th className="px-1.5 py-3 text-left text-xs font-semibold whitespace-nowrap sticky left-8 bg-gray-900 z-10 min-w-37">Name</th>
+                    <th className="px-2 py-3 text-left text-xs font-semibold whitespace-nowrap min-w-37">Mobile</th>
                     {openedMonths.map(m => (
-                      <th key={m} className="px-4 py-3 text-center text-xs font-semibold whitespace-nowrap min-w-32">
+                      <th key={m} className="px-1.5 py-3 text-center text-xs font-semibold whitespace-nowrap min-w-32">
                         {displayMonth(m)}
                       </th>
                     ))}
-                    <th className="px-4 py-3 text-center text-xs font-semibold whitespace-nowrap min-w-30 bg-blue-800">Total Paid</th>
+                    <th className="px-1.5 py-3 text-center text-xs font-semibold whitespace-nowrap min-w-30 bg-blue-800">Total Paid</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -307,21 +307,21 @@ export default function PeriodDetailPage() {
                     }, 0);
                     return (
                       <tr key={u._id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                        <td className="px-4 py-3 text-gray-400 text-xs sticky left-0 bg-inherit">{idx + 1}</td>
-                        <td className="px-4 py-3 font-medium text-gray-800 whitespace-nowrap sticky left-8 bg-inherit">{u.name}</td>
-                        <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{u.mobile || "—"}</td>
+                        <td className="px-1.5 py-3 text-gray-400 text-xs sticky left-0 bg-inherit">{idx + 1}</td>
+                        <td className="px-1.5 py-3 font-medium text-gray-800 whitespace-nowrap sticky left-8 bg-inherit">{u.name}</td>
+                        <td className="px-1.5 py-3 text-gray-500 whitespace-nowrap">{u.mobile || "—"}</td>
                         {openedMonths.map(m => {
                           const pay = paymentMap[`${u._id}_${m}`];
                           if (!pay) return (
-                            <td key={m} className="px-4 py-3 text-center text-gray-200 text-xs">—</td>
+                            <td key={m} className="px-1.5 py-3 text-center text-gray-200 text-xs">—</td>
                           );
                           const isPaid = pay.status === "paid";
                           return (
-                            <td key={m} className="px-4 py-3 text-center">
+                            <td key={m} className="px-1.5 py-3 text-center">
                               <button
                                 onClick={() => togglePayment(pay._id, pay.status)}
                                 disabled={togglingPay === pay._id}
-                                className={`inline-block px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition ${isPaid
+                                className={`inline-block px-1.5 py-1 rounded-full text-xs font-semibold cursor-pointer transition ${isPaid
                                     ? "bg-green-100 text-green-700 hover:bg-green-200"
                                     : "bg-amber-100 text-amber-700 hover:bg-amber-200"
                                   }`}>
@@ -332,7 +332,7 @@ export default function PeriodDetailPage() {
                             </td>
                           );
                         })}
-                        <td className="px-4 py-3 text-center bg-blue-50">
+                        <td className="px-1.5 py-3 text-center bg-blue-50">
                           <span className="font-bold text-green-700 text-sm">
                             {userPaid > 0 ? fmtTaka(userPaid) : "—"}
                           </span>
@@ -344,21 +344,21 @@ export default function PeriodDetailPage() {
                 {/* Footer totals */}
                 <tfoot>
                   <tr className="bg-gray-800 text-white">
-                    <td colSpan={3} className="px-4 py-3.5 text-sm font-bold text-right">Monthly Total =</td>
+                    <td colSpan={3} className="px-1.5 py-3.5 text-sm font-bold text-right">Monthly Total =</td>
                     {openedMonths.map(m => {
                       const paid = users.reduce((s, u) => {
                         const p = paymentMap[`${u._id}_${m}`];
                         return s + (p?.status === "paid" ? p.fee : 0);
                       }, 0);
                       return (
-                        <td key={m} className="px-4 py-3.5 text-center whitespace-nowrap">
+                        <td key={m} className="px-1.5 py-3.5 text-center whitespace-nowrap">
                           <div className="text-green-400 font-bold text-sm">
                             {paid > 0 ? fmtTaka(paid) : "—"}
                           </div>
                         </td>
                       );
                     })}
-                    <td className="px-4 py-3.5 text-center bg-blue-900">
+                    <td className="px-1.5 py-3.5 text-center bg-blue-900">
                       <div className="text-white font-bold text-sm">{fmtTaka(totalPaid)}</div>
                     </td>
                   </tr>
