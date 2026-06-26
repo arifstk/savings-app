@@ -79,9 +79,9 @@ const Header = () => {
           )}
 
           {(role === "user" || role === "admin") && (
-            <Link href="/our-members" className={linkStyles(pathname === "/our-members")}>
-              Our Members
-              <NavUnderline isActive={pathname === "/our-members"} />
+            <Link href="/members" className={linkStyles(pathname === "/members")}>
+              Members
+              <NavUnderline isActive={pathname === "/members"} />
             </Link>
           )}
 

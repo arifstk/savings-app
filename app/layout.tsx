@@ -29,7 +29,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <Providers>
           <Header />
-          <main className='w-[95%] md:w-[90%] mx-auto'>
+          <main className='w-[95%] md:w-[90%] mx-auto min-h-screen'>
             {children}
           </main>
           <Footer />
@@ -39,3 +39,6 @@ export default async function RootLayout({
   );
 }
 
+
+
+// bg-linear-to-r from-teal-500 to-cyan-500 

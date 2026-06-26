@@ -10,8 +10,8 @@ export default function Footer() {
   if (pathname.endsWith("/print")) return null;
 
   return (
-    <footer className="bg-white text-zinc-900 border-t border-zinc-100">
-      <div className="max-w-6xl mx-auto px-6 py-6 border-t border-zinc-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <footer className="bg-white text-zinc-900">
+      <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <p className="text-xs text-zinc-400">
           &copy; {currentYear} Taqwa Savings. All rights reserved.
         </p>
