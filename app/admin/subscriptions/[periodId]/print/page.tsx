@@ -68,7 +68,7 @@ export default function PrintPage() {
     <>
       <style>{`
         @media print {
-          @page { size: A4 landscape; margin: 12mm 10mm; }
+          @page { size: A4 landscape; margin: 8mm 7mm; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           .no-print { display: none !important; }
         }
@@ -86,7 +86,7 @@ export default function PrintPage() {
         </button>
       </div>
 
-      <div className="max-w-5xl mx-auto px-8 py-8 bg-white min-h-screen">
+      <div className="w-max min-w-full mx-auto px-8 py-8 bg-white min-h-screen">
 
         {/* Header */}
         <div className="flex items-center justify-between pb-5 border-b-2 border-gray-800 mb-5">
@@ -110,7 +110,7 @@ export default function PrintPage() {
         </div>
 
         {/* Summary */}
-        <div className="grid grid-cols-3 gap-4 mb-5">
+        <div className="grid grid-cols-3 justify-between gap-4 mb-5">
           <div className="border border-green-200 bg-green-50 rounded-lg p-3 text-center">
             <p className="text-xs text-green-600 uppercase">Collected</p>
             <p className="text-lg font-bold text-green-700">{fmtTaka(totalPaid)}</p>

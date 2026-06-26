@@ -21,7 +21,7 @@ function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
     <input
       {...props}
       className={`w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+        focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-transparent
         disabled:bg-gray-50 disabled:text-gray-400 transition ${props.className ?? ""}`}
     />
   );
@@ -209,7 +209,7 @@ export default function ProfilePage() {
 
   /* ── render ────────────────────────────────────────────────────── */
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 py-10">
       <div className="max-w-2xl mx-auto space-y-6">
 
         {/* Page heading */}
@@ -232,7 +232,7 @@ export default function ProfilePage() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={avatarUploading}
-                className="relative w-20 h-20 rounded-full overflow-hidden focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer"
+                className="relative w-20 h-20 rounded-full overflow-hidden focus:outline-none focus:ring-4 focus:ring-teal-300 cursor-pointer"
               >
                 {hasImage ? (
                   <Image
@@ -351,7 +351,7 @@ export default function ProfilePage() {
               <button
                 type="submit"
                 disabled={profileSaving}
-                className="bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium px-6 py-2.5 rounded-lg text-sm transition"
+                className="bg-linear-to-r from-teal-500 to-cyan-500 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium px-6 py-2.5 rounded-lg text-sm transition cursor-pointer"
               >
                 {profileSaving ? "Saving…" : "Save Changes"}
               </button>
@@ -473,7 +473,7 @@ export default function ProfilePage() {
                   href="https://myaccount.google.com/security"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline font-medium"
+                  className="text-teal-500 hover:underline font-medium"
                 >
                   Google Account settings
                 </a>

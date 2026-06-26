@@ -182,12 +182,12 @@ export default function AdminPage() {
 
   if (status === "loading") return (
     <div className="flex-1 flex items-center justify-center min-h-screen">
-      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-7">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
@@ -219,25 +219,25 @@ export default function AdminPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-linear-to-r from-teal-500 to-cyan-500 border-b border-gray-200">
                   <tr>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">#</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Mobile</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Created At</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Role</th>
-                    <th className="px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide text-center">Update</th>
+                    <th className="text-left px-2 py-2 md:px-5 md:py-3.5 text-xs font-semibold text-white uppercase tracking-wide">#</th>
+                    <th className="text-left px-2 py-2 md:px-5 md:py-3.5 text-xs font-semibold text-white uppercase tracking-wide">Name</th>
+                    <th className="text-left px-2 py-2 md:px-5 md:py-3.5 text-xs font-semibold text-white uppercase tracking-wide">Email</th>
+                    <th className="text-left px-2 py-2 md:px-5 md:py-3.5 text-xs font-semibold text-white uppercase tracking-wide">Mobile</th>
+                    <th className="text-left px-2 py-2 md:px-5 md:py-3.5 text-xs font-semibold text-white uppercase tracking-wide">Created At</th>
+                    <th className="text-left px-2 py-2 md:px-5 md:py-3.5 text-xs font-semibold text-white uppercase tracking-wide">Role</th>
+                    <th className="px-2 py-2 md:px-5 md:py-3.5 text-xs font-semibold text-white uppercase text-center">Update</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {filtered.map((user, idx) => (
                     <tr key={user._id} className="hover:bg-gray-50 transition">
-                      <td className="px-5 py-4 text-gray-400">{idx + 1}</td>
-                      <td className="px-5 py-4 font-medium text-gray-800">{user.name}</td>
-                      <td className="px-5 py-4 text-gray-600">{user.email}</td>
-                      <td className="px-5 py-4 text-gray-600">{user.mobile || <span className="text-gray-300">—</span>}</td>
-                      <td className="px-5 py-4 text-gray-500">
+                      <td className="px-2 py-2 md:px-5 md:py-4 text-gray-400">{idx + 1}</td>
+                      <td className="px-2 py-2 md:px-5 md:py-4 font-medium text-gray-800">{user.name}</td>
+                      <td className="px-2 py-2 md:px-5 md:py-4 text-gray-600">{user.email}</td>
+                      <td className="px-2 py-2 md:px-5 md:py-4 text-gray-600">{user.mobile || <span className="text-gray-300">—</span>}</td>
+                      <td className="px-2 py-2 md:px-5 md:py-4 text-xs text-gray-500">
                         {new Date(user.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
                       </td>
                       <td className="px-5 py-4">
@@ -249,12 +249,12 @@ export default function AdminPage() {
                       <td className="px-5 py-4 text-center">
                         <button
                           onClick={() => openModal(user)}
-                          className="inline-flex items-center justify-center gap-1.5 bg-linear-to-r from-teal-500 to-cyan-500  hover:bg-teal-600 text-white text-xs font-medium px-3.5 py-1.5 rounded-lg transition cursor-pointer"
+                          className="inline-flex items-center justify-center bg-linear-to-r from-teal-500 to-cyan-500  hover:bg-teal-600 text-white text-xs font-medium p-2 rounded-lg transition cursor-pointer"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
-                          Update
+                          
                         </button>
                       </td>
                     </tr>

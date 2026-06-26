@@ -95,13 +95,13 @@ export default function SubscriptionsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between pt-6 mb-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 mb-6">
         <div>
           <h1 className="text-xl font-bold text-gray-900">Subscription Periods</h1>
           <p className="text-sm text-gray-500 mt-0.5">Create periods and manage monthly payments</p>
         </div>
         <button onClick={() => setShowForm(v => !v)}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2.5 rounded-xl cursor-pointer transition">
+          className="flex items-center gap-2 bg-linear-to-r from-teal-500 to-cyan-500 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2.5 rounded-xl cursor-pointer transition">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
@@ -111,31 +111,31 @@ export default function SubscriptionsPage() {
 
       {/* Create form */}
       {showForm && (
-        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 mb-6">
+        <div className="bg-teal-50 border border-blue-100 rounded-2xl p-5 mb-6">
           <p className="text-sm font-semibold text-blue-800 mb-4">New Subscription Period</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-xs text-gray-500 mb-1">Period Name</label>
               <input type="text" placeholder="e.g. 2026–2027 Session" value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500" />
             </div>
             <div>
               <label className="block text-xs text-gray-500 mb-1">Start Month</label>
               <input type="month" value={form.startMonth}
                 onChange={e => setForm({ ...form, startMonth: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500" />
             </div>
             <div>
               <label className="block text-xs text-gray-500 mb-1">End Month</label>
               <input type="month" value={form.endMonth}
                 onChange={e => setForm({ ...form, endMonth: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500" />
             </div>
           </div>
           <div className="flex gap-2 mt-4">
             <button onClick={handleCreate} disabled={creating}
-              className="bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-medium px-5 py-2 rounded-lg cursor-pointer transition">
+              className="bg-linear-to-r from-teal-500 to-cyan-500 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-medium px-5 py-2 rounded-lg cursor-pointer transition">
               {creating ? "Creating…" : "Create Period"}
             </button>
             <button onClick={() => setShowForm(false)}

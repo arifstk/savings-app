@@ -10,7 +10,7 @@ export default function Footer() {
   if (pathname.endsWith("/print")) return null;
 
   return (
-    <footer className="bg-white text-zinc-900">
+    <footer className="bg-white text-zinc-900 pt-10">
       <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <p className="text-xs text-zinc-400">
           &copy; {currentYear} Taqwa Savings. All rights reserved.
@@ -29,9 +29,9 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-0 text-xs text-zinc-400">
-          <p className='tracking-tighter'>developed by: <Link href="https://github.com/rashedjamanraj" className="hover:text-zinc-600 transition-colors">Rashedujjaman (front)</Link>
+          <p className='tracking-tighter'>developed by: <Link href="https://github.com/rashedjamanraj" className="hover:text-zinc-600 transition-colors">Rashedujjaman (frontend)</Link>
             <span className='text-zinc-200'> | </span>
-            <Link href="https://arif-portfolio-eosin.vercel.app/" className="hover:text-zinc-600 transition-colors">arif (back)</Link>
+            <Link href="https://arif-portfolio-eosin.vercel.app/" className="hover:text-zinc-600 transition-colors">arif (backend)</Link>
           </p>
         </div>
       </div>

@@ -173,17 +173,17 @@ export default function PeriodDetailPage() {
           </p>
         </div>
         <Link href={`/admin/subscriptions/${periodId}/print`} target="_blank"
-          className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition">
+          className="flex items-center gap-2 bg-linear-to-r from-teal-500 to-cyan-500 hover:bg-gray-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
           </svg>
-          Print Report
+          Print
         </Link>
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-green-50 border border-green-200 rounded-2xl px-5 py-4">
           <p className="text-xs text-green-600 uppercase tracking-wide mb-1">Collected</p>
           <p className="text-2xl font-bold text-green-700">{fmtTaka(totalPaid)}</p>
@@ -236,7 +236,7 @@ export default function PeriodDetailPage() {
               <p className="text-xs text-gray-400 mt-0.5">This fee will be applied when you open each month</p>
             </div>
             <button onClick={saveAllFees} disabled={savingFee === "all"}
-              className="bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-medium px-4 py-2 rounded-lg cursor-pointer transition">
+              className="bg-linear-to-r from-teal-500 to-cyan-500 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-medium px-4 py-2 rounded-lg cursor-pointer transition">
               {savingFee === "all" ? "Saving…" : "Save All Fees"}
             </button>
           </div>
@@ -254,15 +254,15 @@ export default function PeriodDetailPage() {
               <tbody className="divide-y divide-gray-100">
                 {users.map((u, idx) => (
                   <tr key={u._id} className="hover:bg-gray-50">
-                    <td className="px-1 py-3 text-gray-400 text-xs">{idx + 1}</td>
-                    <td className="px-1 py-3 font-medium text-gray-800">{u.name}</td>
-                    <td className="px-1 py-3 text-gray-500">{u.mobile || "—"}</td>
-                    <td className="px-1 py-3">
+                    <td className="px-2 py-2 text-gray-400 text-xs">{idx + 1}</td>
+                    <td className="px-1 py-2 font-medium text-gray-800">{u.name}</td>
+                    <td className="px-1 py-2 text-gray-500">{u.mobile || "—"}</td>
+                    <td className="px-1 py-2">
                       <input type="number" placeholder="0" value={editFees[u._id] ?? ""}
                         onChange={e => setEditFees(prev => ({ ...prev, [u._id]: e.target.value }))}
-                        className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        className="border border-teal-300 rounded-lg px-3 py-1.5 text-sm w-22 sm:w-25 focus:outline-none focus:ring-1 focus:ring-teal-500" />
                     </td>
-                    <td className="px-1.5 py-3">
+                    <td className="px-1.5 py-2">
                       <button onClick={() => saveFee(u._id)} disabled={savingFee === u._id}
                         className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-1.5 py-1.5 rounded-lg cursor-pointer disabled:opacity-60">
                         {savingFee === u._id ? "…" : "Save"}
@@ -287,9 +287,9 @@ export default function PeriodDetailPage() {
             <div className="overflow-x-auto">
               <table className="text-sm border-collapse w-full">
                 <thead>
-                  <tr className="bg-gray-900 text-white">
-                    <th className="px-1.5 py-3 text-left text-xs font-semibold whitespace-nowrap sticky left-0 bg-gray-900 z-10">#</th>
-                    <th className="px-1.5 py-3 text-left text-xs font-semibold whitespace-nowrap sticky left-8 bg-gray-900 z-10 min-w-37">Name</th>
+                  <tr className="bg-linear-to-r from-teal-500 to-cyan-500 text-white">
+                    <th className="px-1.5 py-3 text-left text-xs font-semibold whitespace-nowrap sticky left-0  z-10">#</th>
+                    <th className="px-1.5 py-3 text-left text-xs font-semibold whitespace-nowrap sticky left-8  z-10 min-w-37">Name</th>
                     <th className="px-2 py-3 text-left text-xs font-semibold whitespace-nowrap min-w-37">Mobile</th>
                     {openedMonths.map(m => (
                       <th key={m} className="px-1.5 py-3 text-center text-xs font-semibold whitespace-nowrap min-w-32">
@@ -309,7 +309,7 @@ export default function PeriodDetailPage() {
                       <tr key={u._id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                         <td className="px-1.5 py-3 text-gray-400 text-xs sticky left-0 bg-inherit">{idx + 1}</td>
                         <td className="px-1.5 py-3 font-medium text-gray-800 whitespace-nowrap sticky left-8 bg-inherit">{u.name}</td>
-                        <td className="px-1.5 py-3 text-gray-500 whitespace-nowrap">{u.mobile || "—"}</td>
+                        <td className="pl-3 px-1.5 py-3 text-gray-500 whitespace-nowrap">{u.mobile || "—"}</td>
                         {openedMonths.map(m => {
                           const pay = paymentMap[`${u._id}_${m}`];
                           if (!pay) return (
@@ -343,7 +343,7 @@ export default function PeriodDetailPage() {
                 </tbody>
                 {/* Footer totals */}
                 <tfoot>
-                  <tr className="bg-gray-800 text-white">
+                  <tr className="bg-linear-to-r from-teal-500 to-cyan-500 text-white">
                     <td colSpan={3} className="px-1.5 py-3.5 text-sm font-bold text-right">Monthly Total =</td>
                     {openedMonths.map(m => {
                       const paid = users.reduce((s, u) => {
@@ -352,7 +352,7 @@ export default function PeriodDetailPage() {
                       }, 0);
                       return (
                         <td key={m} className="px-1.5 py-3.5 text-center whitespace-nowrap">
-                          <div className="text-green-400 font-bold text-sm">
+                          <div className=" font-bold text-sm">
                             {paid > 0 ? fmtTaka(paid) : "—"}
                           </div>
                         </td>
