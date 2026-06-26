@@ -29,9 +29,9 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-0 text-xs text-zinc-400">
-          <p className='tracking-widest'>developed by: <Link href="https://github.com/rashedjamanraj" className="hover:text-zinc-600 transition-colors">Rashedujjaman (frontend)</Link>
-          </p>
-          <p className='tracking-widest'>developed by: <Link href="https://arif-portfolio-eosin.vercel.app/" className="hover:text-zinc-600 transition-colors">arif hossain (backend)</Link>
+          <p className='tracking-tighter'>developed by: <Link href="https://github.com/rashedjamanraj" className="hover:text-zinc-600 transition-colors">Rashedujjaman (front)</Link>
+            <span className='text-zinc-200'> | </span>
+            <Link href="https://arif-portfolio-eosin.vercel.app/" className="hover:text-zinc-600 transition-colors">arif (back)</Link>
           </p>
         </div>
       </div>

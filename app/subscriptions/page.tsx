@@ -59,7 +59,7 @@ export default function SubscriptionsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen py-10">
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}
@@ -70,7 +70,7 @@ export default function SubscriptionsPage() {
 
         {/* User info card */}
         {user && (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5 mb-6">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-3 py-2 md:px-6 md:py-5 mb-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center text-white text-lg font-bold shrink-0">
                 {user.name.charAt(0).toUpperCase()}
@@ -113,7 +113,7 @@ export default function SubscriptionsPage() {
                 <Link
                   key={period._id}
                   href={`/subscriptions/${period._id}`}
-                  className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5 flex items-center justify-between gap-4 hover:border-teal-400 hover:shadow-md transition group"
+                  className="bg-white rounded-2xl border border-gray-200 shadow-sm px-2 py-3 md:px-6 md:py-5 flex items-center justify-between gap-4 hover:border-teal-400 hover:shadow-md transition group"
                 >
                   {/* Left: period info */}
                   <div className="flex items-center gap-4 min-w-0">
