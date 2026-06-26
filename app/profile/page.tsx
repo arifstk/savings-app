@@ -209,7 +209,7 @@ export default function ProfilePage() {
 
   /* ── render ────────────────────────────────────────────────────── */
   return (
-    <div className="min-h-screen bg-gray-50 py-10">
+    <div className="min-h-screen py-10">
       <div className="max-w-2xl mx-auto space-y-6">
 
         {/* Page heading */}

@@ -121,7 +121,7 @@ const Header = () => {
             {/* Not logged in */}
             {status === "unauthenticated" && (
               <Link href="/login">
-                <button className="bg-black text-white py-1.5 px-4 rounded-lg cursor-pointer">
+                <button className="bg-linear-to-r from-teal-500 to-cyan-500 text-white py-1.5 px-4 rounded-lg cursor-pointer">
                   Login
                 </button>
               </Link>
