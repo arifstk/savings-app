@@ -82,7 +82,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-500 bg-black/40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -121,8 +121,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition
                   ${active
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40"
-                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                    ? "bg-linear-to-r from-teal-500 to-cyan-500  text-white shadow-lg shadow-blue-900/40"
+                    : "text-gray-400 hover:bg-teal-700 hover:text-white"
                   }`}
               >
                 {item.icon}
@@ -148,7 +148,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* ── Main content ─────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile topbar */}
+        {/* Mobile top bar */}
         <div className="lg:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-200">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -164,7 +164,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Page content */}
-        <div className="flex-1 p-6">{children}</div>
+        <div className="flex-1 p-0 md:p-6">{children}</div>
       </div>
     </div>
   );

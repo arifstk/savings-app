@@ -187,7 +187,7 @@ export default function AdminPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-2">
+    <div className="min-h-screen py-8">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
@@ -203,7 +203,7 @@ export default function AdminPage() {
             placeholder="Search by name, email or mobile…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full max-w-sm border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full max-w-sm border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-teal-300"
           />
           <span className="text-sm text-gray-500">{filtered.length} user{filtered.length !== 1 ? "s" : ""}</span>
         </div>
@@ -249,7 +249,7 @@ export default function AdminPage() {
                       <td className="px-5 py-4 text-center">
                         <button
                           onClick={() => openModal(user)}
-                          className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium px-3.5 py-1.5 rounded-lg transition cursor-pointer"
+                          className="inline-flex items-center justify-center gap-1.5 bg-linear-to-r from-teal-500 to-cyan-500  hover:bg-teal-600 text-white text-xs font-medium px-3.5 py-1.5 rounded-lg transition cursor-pointer"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -322,7 +322,7 @@ export default function AdminPage() {
                   <button
                     onClick={handleUserSave}
                     disabled={userSaving}
-                    className="bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-medium px-5 py-2 rounded-lg transition cursor-pointer"
+                    className="bg-linear-to-r from-teal-500 to-cyan-500  hover:bg-teal-600 disabled:opacity-60 text-white text-sm font-medium px-5 py-2 rounded-lg transition cursor-pointer"
                   >
                     {userSaving ? "Saving…" : "Save User Info"}
                   </button>
@@ -330,175 +330,6 @@ export default function AdminPage() {
               </div>
 
               <hr className="border-gray-100" />
-
-              {/* Subscription Section */}
-              {/* <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Subscriptions</h3>
-                
-                <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4">
-                  <p className="text-xs font-medium text-blue-700 mb-3">Add New Entry</p>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">Month</label>
-                      <select
-                        value={newSub.month}
-                        onChange={(e) => setNewSub({ ...newSub, month: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                      >
-                        {monthOptions().map((m) => (
-                          <option key={m} value={m}>{m}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">Amount (Taka)</label>
-                      <input
-                        type="number"
-                        placeholder="1,500"
-                        value={newSub.amount}
-                        onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">Date</label>
-                      <input
-                        type="date"
-                        value={newSub.date}
-                        onChange={(e) => setNewSub({ ...newSub, date: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleAddSub}
-                    disabled={subSaving}
-                    className="mt-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-medium px-5 py-2 rounded-lg transition cursor-pointer"
-                  >
-                    {subSaving ? "Adding…" : "+ Add Entry"}
-                  </button>
-                </div>
-
-                
-                {subsLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                  </div>
-                ) : (
-                  <div className="border border-gray-200 rounded-xl overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead className="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 w-10">#</th>
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Month</th>
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Subscription</th>
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Date</th>
-                          <th className="text-center px-4 py-3 text-xs font-semibold text-gray-500">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {subs.length === 0 ? (
-                          <tr>
-                            <td colSpan={5} className="text-center py-8 text-gray-400 text-xs">
-                              No subscription entries yet
-                            </td>
-                          </tr>
-                        ) : subs.map((sub, idx) => (
-                          <tr key={sub._id} className="hover:bg-gray-50">
-                            <td className="px-4 py-3 text-gray-400">{idx + 1}</td>
-
-                            {editSub?._id === sub._id ? (
-                              <>
-                                <td className="px-4 py-3">
-                                  <select
-                                    value={editSub.month}
-                                    onChange={(e) => setEditSub({ ...editSub, month: e.target.value })}
-                                    className="border border-gray-300 rounded px-2 py-1 text-xs w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                  >
-                                    {monthOptions().map((m) => <option key={m} value={m}>{m}</option>)}
-                                  </select>
-                                </td>
-                                <td className="px-4 py-3">
-                                  <input
-                                    type="number"
-                                    value={editSub.amount}
-                                    onChange={(e) => setEditSub({ ...editSub, amount: Number(e.target.value) })}
-                                    className="border border-gray-300 rounded px-2 py-1 text-xs w-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                  />
-                                </td>
-                                <td className="px-4 py-3">
-                                  <input
-                                    type="date"
-                                    value={editSub.date.split("T")[0]}
-                                    onChange={(e) => setEditSub({ ...editSub, date: e.target.value })}
-                                    className="border border-gray-300 rounded px-2 py-1 text-xs w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                  />
-                                </td>
-                                <td className="px-4 py-3">
-                                  <div className="flex items-center justify-center gap-1.5">
-                                    <button
-                                      onClick={handleSubSave}
-                                      disabled={subSaving}
-                                      className="bg-green-600 hover:bg-green-500 text-white text-xs px-2.5 py-1 rounded transition cursor-pointer"
-                                    >
-                                      {subSaving ? "…" : "Save"}
-                                    </button>
-                                    <button
-                                      onClick={() => setEditSub(null)}
-                                      className="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs px-2.5 py-1 rounded transition cursor-pointer"
-                                    >
-                                      Cancel
-                                    </button>
-                                  </div>
-                                </td>
-                              </>
-                            ) : (
-                              <>
-                                <td className="px-4 py-3 font-medium text-gray-800">{sub.month}</td>
-                                <td className="px-4 py-3 text-gray-700">
-                                  Tk. {sub.amount.toLocaleString("en-BD", { minimumFractionDigits: 2 })}
-                                </td>
-                                <td className="px-4 py-3 text-gray-500">
-                                  {new Date(sub.date).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).replace(/\//g, ".")}
-                                </td>
-                                <td className="px-4 py-3">
-                                  <div className="flex items-center justify-center gap-1.5">
-                                    <button
-                                      onClick={() => setEditSub(sub)}
-                                      className="bg-amber-500 hover:bg-amber-400 text-white text-xs px-2.5 py-1 rounded transition cursor-pointer"
-                                    >
-                                      Edit
-                                    </button>
-                                    <button
-                                      onClick={() => handleSubDelete(sub._id)}
-                                      className="bg-red-500 hover:bg-red-400 text-white text-xs px-2.5 py-1 rounded transition cursor-pointer"
-                                    >
-                                      Del
-                                    </button>
-                                  </div>
-                                </td>
-                              </>
-                            )}
-                          </tr>
-                        ))}
-                      </tbody>
-
-                      
-                      {subs.length > 0 && (
-                        <tfoot>
-                          <tr className="bg-gray-50 border-t-2 border-gray-200">
-                            <td colSpan={2} className="px-4 py-3 text-sm font-bold text-gray-700 text-right">Total =</td>
-                            <td className="px-4 py-3 text-sm font-bold text-blue-700">
-                              Tk. {subsTotal.toLocaleString("en-BD", { minimumFractionDigits: 2 })}
-                            </td>
-                            <td colSpan={2} />
-                          </tr>
-                        </tfoot>
-                      )}
-                    </table>
-                  </div>
-                )}
-              </div> */}
             </div>
           </div>
         </div>

@@ -57,8 +57,8 @@ export default function OurMembersPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen py-10 px-5">
+      <div className="max-w-4xl mx-auto">
 
         {/* Page header */}
         <div className="text-center mb-10">
@@ -96,7 +96,7 @@ export default function OurMembersPage() {
             {search ? "No members match your search." : "No members found."}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             {filtered.map((member, idx) => (
               <MemberCard key={member._id} member={member} index={idx} />
             ))}

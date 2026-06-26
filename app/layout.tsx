@@ -42,3 +42,4 @@ export default async function RootLayout({
 
 
 // bg-linear-to-r from-teal-500 to-cyan-500 
+// bg-linear-to-r bg-from-teal-500 bg-to-cyan-500
