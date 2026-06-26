@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Providers from "@/components/Providers";
+import Footer from "@/components/Footer";
 // import Providers from "@/components/Providers";
 // import HeaderWrapper from "@/components/HeaderWrapper";
 // import { Toaster } from "react-hot-toast";
@@ -31,8 +32,10 @@ export default async function RootLayout({
           <main className='w-[95%] md:w-[90%] mx-auto'>
             {children}
           </main>
+          <Footer />
         </Providers>
       </body>
     </html>
   );
 }
+

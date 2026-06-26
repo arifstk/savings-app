@@ -1,44 +1,15 @@
-// components/MobileNav.tsx
-"use client";
+'use client';
+import Link from 'next/link';
+import Logo from './Logo';
+import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
-import Logo from "./Logo";
-
-const MobileNav = () => {
+export default function Footer() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const sidebarRef = useRef<HTMLDivElement>(null);
+  const currentYear = new Date().getFullYear();
 
   const role = session?.user?.role ?? null;
-
-  // Close on route change
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  // Close on outside click
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    if (open) document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [open]);
-
-  // Lock body scroll when open
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
 
   // Helper styles to keep code DRY
   const linkStyles = (isActive: boolean) =>
@@ -48,33 +19,13 @@ const MobileNav = () => {
     }`;
 
   return (
-    <>
-      {/* ── Hamburger button ── */}
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 group z-50 relative"
-        aria-label="Toggle menu"
-      >
-        <span className={`block h-0.5 bg-slate-800 transition-all duration-300 ease-in-out ${open ? "w-5 rotate-45 translate-y-2" : "w-5"}`} />
-        <span className={`block h-0.5 bg-slate-800 transition-all duration-300 ease-in-out ${open ? "w-0 opacity-0" : "w-4"}`} />
-        <span className={`block h-0.5 bg-slate-800 transition-all duration-300 ease-in-out ${open ? "w-5 -rotate-45 -translate-y-2" : "w-5"}`} />
-      </button>
+    <footer className="bg-white text-zinc-900 border-t border-zinc-100">
+      <div className="w-[96%] md:w-[90%] mx-auto px-3 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
 
-      {/* ── Backdrop ── */}
-      <div
-        className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-        onClick={() => setOpen(false)}
-      />
-
-      {/* ── Sidebar ── */}
-      <div
-        ref={sidebarRef}
-        className={`fixed top-0 left-0 w-72 h-screen bg-white shadow-2xl border-r border-slate-100/80 z-50 md:hidden flex flex-col pt-6 transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        {/* Header */}
-        <div>
-          <div className="px-4"><Logo /></div>
-          <div><X className="absolute top-4 right-4 cursor-pointer" onClick={() => setOpen(false)} /></div>
+        {/* Brand Column */}
+        <div className="space-y-4">
+          <Logo />
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, sint!</p>
         </div>
 
         {/* Nav links — dynamically scrollable */}
@@ -154,24 +105,24 @@ const MobileNav = () => {
           )}
         </nav>
 
-        {/* Sign out — Anchored to bottom footer */}
-        {/* {session?.user && (
-          <div className="p-4 border-t border-slate-100 bg-slate-50/40 shrink-0">
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100/80 transition-all duration-150 cursor-pointer"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-              </svg>
-              Sign Out
-            </button>
-          </div>
-        )} */}
       </div>
-    </>
-  );
-};
 
-export default MobileNav;
+      {/* Bottom Bar */}
+      <div className="max-w-6xl mx-auto px-6 py-6 border-t border-zinc-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <p className="text-xs text-zinc-400">
+          &copy; {currentYear} Tarnix. All rights reserved.
+        </p>
+        <div className="flex flex-col gap-0 text-xs text-zinc-400">
+          <div>
+            <Link href="/privacy" className="hover:text-zinc-600 transition-colors">Privacy Policy</Link>
+            <span className='text-zinc-200'> | </span>
+            <Link href="/terms" className="hover:text-zinc-600 transition-colors">Terms of Service</Link>
+          </div>
+          <p className='tracking-widest'>developed by: <Link href="https://arif-portfolio-eosin.vercel.app/" className="hover:text-zinc-600 transition-colors">arif hossain</Link>
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
 
