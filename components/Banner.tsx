@@ -23,10 +23,10 @@ export default function Banner() {
   if (!banner.h1 && !banner.h2 && !banner.p) return null;
 
   return (
-    <div className="w-full bg-teal-300 px-6 py-10 text-center">
+    <div className="w-full bg-linear-to-r from-teal-500 to-cyan-500 px-6 py-10 text-center rounded-xl">
       <div className="max-w-3xl mx-auto">
         {banner.h1 && (
-          <h1 className="text-3xl sm:text-4xl font-bold text-teal-900 mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-white">
             {banner.h1}
           </h1>
         )}

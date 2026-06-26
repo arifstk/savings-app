@@ -37,18 +37,18 @@ const Header = () => {
 
   // Link style
   const linkStyles = (isActive: boolean) =>
-    `relative group text-sm font-medium transition-colors duration-200 py-1.5 px-1 ${isActive ? "text-indigo-600 font-semibold" : "text-slate-600 hover:text-slate-900"
+    `relative group text-sm font-medium transition-colors duration-200 py-1.5 px-1 ${isActive ? "text-teal-600 font-semibold" : "text-slate-600 hover:text-slate-900"
     }`;
 
   // Reusable underline markup component to avoid repetitive code
   const NavUnderline = ({ isActive }: { isActive: boolean }) => (
     <>
       <span
-        className={`absolute -bottom-0.5 right-1/2 h-0.5 bg-indigo-500 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
+        className={`absolute -bottom-0.5 right-1/2 h-0.5 bg-teal-600 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
           }`}
       />
       <span
-        className={`absolute -bottom-0.5 left-1/2 h-0.5 bg-indigo-500 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
+        className={`absolute -bottom-0.5 left-1/2 h-0.5 bg-teal-600 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
           }`}
       />
     </>

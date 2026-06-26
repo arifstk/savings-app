@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 // import { getServerSession } from "next-auth";
 
 export const metadata: Metadata = {
-  title: "Savings App",
+  title: "Taqwa Savings",
   description: "Savings App for money",
 };
 

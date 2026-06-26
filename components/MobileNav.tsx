@@ -43,7 +43,7 @@ const MobileNav = () => {
   // Helper styles to keep code DRY
   const linkStyles = (isActive: boolean) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${isActive
-      ? "bg-indigo-50 text-indigo-600 font-semibold"
+      ? "bg-teal-50 text-teal-600 font-semibold"
       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
     }`;
 
