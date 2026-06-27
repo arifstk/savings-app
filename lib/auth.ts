@@ -1,4 +1,3 @@
-
 // lib/auth.ts
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -143,6 +142,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
     async session({ session, token }) {
       if (session.user) {
+        await dbConnect();
+        // ✅ Check user still exists in DB on every session
+        const userExists = await User.findById(token.id).lean();
+        if (!userExists) {
+          // Returning null kills the session
+          return null as any;
+        }
+
         session.user.id = token.id as string;
         session.user.role = (token.role ?? "user") as "admin" | "user";
         session.user.mobile = token.mobile as string | undefined;
@@ -155,4 +162,3 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
-
