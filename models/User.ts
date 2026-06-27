@@ -14,6 +14,7 @@ export interface IUser extends Document {
   resetPasswordExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
+  emailVerified: boolean;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -61,8 +62,12 @@ const UserSchema = new Schema<IUser>(
       type: Date,
       select: false,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Sparse unique index so multiple users can have no mobile, but no two users

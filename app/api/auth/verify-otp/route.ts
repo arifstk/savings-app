@@ -1,6 +1,9 @@
+// app/api/auth/verify-otp/route.ts
+
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Otp from "@/models/Otp";
+import User from "@/models/User";
 import { verifyOtpHash } from "@/lib/otp";
 
 export async function POST(req: Request) {
@@ -10,7 +13,7 @@ export async function POST(req: Request) {
     if (!email || !otp) {
       return NextResponse.json(
         { error: "Email and OTP are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -22,16 +25,22 @@ export async function POST(req: Request) {
 
     if (!otpRecord) {
       return NextResponse.json(
-        { error: "OTP expired. Please log in again.", clearOtp: false },
-        { status: 400 }
+        {
+          error: "OTP expired or not found. Please try again.",
+          clearOtp: false,
+        },
+        { status: 400 },
       );
     }
 
     if (otpRecord.attempts >= 5) {
       await Otp.deleteOne({ email });
       return NextResponse.json(
-        { error: "Too many wrong attempts. Please log in again.", clearOtp: false },
-        { status: 400 }
+        {
+          error: "Too many wrong attempts. Please try again.",
+          clearOtp: false,
+        },
+        { status: 400 },
       );
     }
 
@@ -46,11 +55,17 @@ export async function POST(req: Request) {
           error: `Incorrect OTP. ${left} attempt${left === 1 ? "" : "s"} left.`,
           clearOtp: true,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // OTP is valid — delete it (signIn() in the client will create the session)
+    // ✅ OTP valid — mark email as verified
+    await User.updateOne(
+      { email: email.toLowerCase().trim() },
+      { $set: { emailVerified: true } },
+    );
+
+    // Delete used OTP
     await Otp.deleteOne({ email });
 
     return NextResponse.json({ success: true });
@@ -58,7 +73,8 @@ export async function POST(req: Request) {
     console.error("Verify OTP error:", err);
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
+

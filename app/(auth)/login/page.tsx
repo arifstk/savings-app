@@ -1,12 +1,13 @@
 // app/(auth)/login/page.tsx
-"use client";
 
+"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 import AuthCard from "@/components/AuthCard";
 import GoogleButton from "@/components/GoogleButton";
@@ -32,9 +33,7 @@ export default function LoginPage() {
     try {
       const res = await fetch("/api/auth/check-credentials", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           identifier: data.identifier,
           password: data.password,
@@ -49,11 +48,29 @@ export default function LoginPage() {
         return;
       }
 
-      toast.success("OTP sent to your email!");
+      // ✅ Email verified — sign in directly, no OTP needed
+      if (result.skipOtp) {
+        const signInResult = await signIn("credentials", {
+          identifier: data.identifier,
+          password: data.password,
+          redirect: false,
+        });
 
-      router.push(
-        `/verify-otp?email=${encodeURIComponent(result.email)}`
-      );
+        if (signInResult?.error) {
+          toast.error("Login failed. Please try again.");
+          setSubmitting(false);
+          return;
+        }
+
+        toast.success("Logged in successfully!");
+        router.push("/");
+        router.refresh();
+        return;
+      }
+
+      // First login — needs OTP verification
+      toast.success("OTP sent to your email!");
+      router.push(`/verify-otp?email=${encodeURIComponent(result.email)}`);
     } catch {
       toast.error("Something went wrong. Please try again.");
       setSubmitting(false);
@@ -67,28 +84,18 @@ export default function LoginPage() {
       footer={
         <>
           Don&apos;t have an account?{" "}
-          <Link
-            href="/register"
-            className="font-semibold text-black hover:underline"
-          >
+          <Link href="/register" className="font-semibold text-black hover:underline">
             Sign up
           </Link>
         </>
       }
     >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Identifier */}
         <div>
-          <label
-            htmlFor="identifier"
-            className="block text-sm text-gray-700 mb-1.5"
-          >
+          <label htmlFor="identifier" className="block text-sm text-gray-700 mb-1.5">
             Email or mobile number
           </label>
-
           <input
             id="identifier"
             type="text"
@@ -97,28 +104,18 @@ export default function LoginPage() {
             placeholder="you@example.com"
             className="w-full bg-white border border-gray-300 focus:border-black outline-none rounded-lg px-3.5 py-2.5 text-black placeholder:text-gray-400 transition"
           />
-
           {errors.identifier && (
-            <p className="text-red-500 text-xs mt-1.5">
-              {errors.identifier.message}
-            </p>
+            <p className="text-red-500 text-xs mt-1.5">{errors.identifier.message}</p>
           )}
         </div>
 
         {/* Password */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label
-              htmlFor="password"
-              className="block text-sm text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm text-gray-700">
               Password
             </label>
-
-            <Link
-              href="/forgot-password"
-              className="text-xs text-black hover:underline"
-            >
+            <Link href="/forgot-password" className="text-xs text-black hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -137,39 +134,28 @@ export default function LoginPage() {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-black transition cursor-pointer"
             >
-              {showPassword ? (
-                <EyeOff size={18} />
-              ) : (
-                <Eye size={18} />
-              )}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
           {errors.password && (
-            <p className="text-red-500 text-xs mt-1.5">
-              {errors.password.message}
-            </p>
+            <p className="text-red-500 text-xs mt-1.5">{errors.password.message}</p>
           )}
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
           disabled={submitting}
           className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
         >
-          {submitting ? "Sending OTP…" : "Continue"}
+          {submitting ? "Logging in…" : "Continue"}
         </button>
       </form>
 
-      {/* Divider */}
       <div className="flex items-center gap-3 my-6">
         <div className="h-px flex-1 bg-gray-200" />
-
-        <span className="text-xs text-gray-500 uppercase tracking-wide">
-          or
-        </span>
-
+        <span className="text-xs text-gray-500 uppercase tracking-wide">or</span>
         <div className="h-px flex-1 bg-gray-200" />
       </div>
 

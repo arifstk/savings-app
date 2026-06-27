@@ -33,7 +33,7 @@ const OtpSchema = new Schema<IOtp>(
 );
 
 // MongoDB automatically deletes the document after expiresAt
-OtpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+OtpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 300 });
 
 // Only one OTP per email at a time
 OtpSchema.index({ email: 1 }, { unique: true });

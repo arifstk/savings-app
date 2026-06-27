@@ -1,3 +1,5 @@
+// app/(auth)/verify-otp/page.tsx
+
 "use client";
 
 import { Suspense, useRef, useState, useEffect, KeyboardEvent, ClipboardEvent } from "react";
