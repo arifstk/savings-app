@@ -5,7 +5,7 @@ import React from 'react'
 const page = () => {
   return (
     <div>
-      Contact page 
+      Contact page Content goes here...
     </div>
   )
 }
