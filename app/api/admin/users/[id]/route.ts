@@ -1,3 +1,5 @@
+// app/api/admin/users/[id]/route.ts
+
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
@@ -8,6 +10,7 @@ const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(80),
   email: z.string().email("Enter a valid email"),
   mobile: z.string().optional().or(z.literal("")),
+  role: z.enum(["user", "admin"]).optional(), // Added role option to update dynamically
 });
 
 export async function PUT(
@@ -31,10 +34,9 @@ export async function PUT(
       );
     }
 
-    const { name, email, mobile } = parsed.data;
+    const { name, email, mobile, role } = parsed.data;
     await dbConnect();
 
-    // Check email not taken by another user
     const emailTaken = await User.findOne({ email, _id: { $ne: id } });
     if (emailTaken) {
       return NextResponse.json(
@@ -45,7 +47,12 @@ export async function PUT(
 
     const updated = await User.findByIdAndUpdate(
       id,
-      { name, email: email.toLowerCase().trim(), mobile: mobile || undefined },
+      {
+        name,
+        email: email.toLowerCase().trim(),
+        mobile: mobile || undefined,
+        ...(role && { role }), // Safely updates role if passed from your Admin Dashboard
+      },
       { new: true },
     ).select("name email mobile role isVerified createdAt");
 
@@ -62,3 +69,4 @@ export async function PUT(
     );
   }
 }
+

@@ -1,11 +1,11 @@
 // lib/auth.ts
+
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
-import { tryClaimAdmin } from "@/lib/admin";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.AUTH_SECRET,
@@ -19,18 +19,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       name: "Credentials",
       credentials: {
-        // Path A: OTP verified (first-time login after registration)
         otpEmail: { label: "OTP Email", type: "text" },
         otp: { label: "OTP", type: "text" },
         otpVerified: { label: "OTP Verified", type: "text" },
-        // Path B: Direct login (returning verified users)
         identifier: { label: "Identifier", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         await dbConnect();
 
-        // ── Path A: Client already verified OTP via /api/auth/verify-otp ──
         if (credentials?.otpVerified === "true" && credentials?.otpEmail) {
           const email = (credentials.otpEmail as string).toLowerCase().trim();
           const user = await User.findOne({ email });
@@ -48,7 +45,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           };
         }
 
-        // ── Path B: Direct login — verified users skip OTP ──
         if (credentials?.identifier && credentials?.password) {
           const normalized = (credentials.identifier as string)
             .trim()
@@ -65,8 +61,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (!user.password)
             throw new Error("This account uses Google sign-in.");
 
-          // Safety net: should never reach here if login page checks correctly,
-          // but block unverified users from bypassing OTP via direct signIn()
           if (!user.emailVerified) throw new Error("Email not verified.");
 
           const isValid = await bcrypt.compare(
@@ -99,20 +93,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         let existingUser = await User.findOne({ email: user.email });
 
         if (!existingUser) {
+          // Check if this is the very first user in the database
+          const isFirstUser = (await User.countDocuments({})) === 0;
+
           existingUser = await User.create({
             name: user.name ?? "Google User",
             email: user.email,
             image: user.image ?? "",
             provider: "google",
-            role: "user",
-            emailVerified: true, // ✅ Google accounts are pre-verified
+            role: isFirstUser ? "admin" : "user",
+            emailVerified: true,
           });
-
-          const isFirstUser = await tryClaimAdmin(existingUser._id.toString());
-          if (isFirstUser) {
-            existingUser.role = "admin";
-            await existingUser.save();
-          }
         }
 
         user.role = existingUser.role;
@@ -143,10 +134,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         await dbConnect();
-        // ✅ Check user still exists in DB on every session
+
         const userExists = await User.findById(token.id).lean();
         if (!userExists) {
-          // Returning null kills the session
           return null as any;
         }
 
@@ -162,3 +152,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+
