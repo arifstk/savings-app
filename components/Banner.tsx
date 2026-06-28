@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Tiro_Bangla } from "next/font/google";
+
+const banglaFont = Tiro_Bangla({
+  subsets: ["bengali"],
+  weight: ["400"],
+});
 
 interface BannerData {
   enabled: boolean;
@@ -8,6 +14,8 @@ interface BannerData {
   h2: string;
   p: string;
 }
+
+const isBangla = (text: string) => /[\u0980-\u09FF]/.test(text);
 
 export default function Banner() {
   const [banner, setBanner] = useState<BannerData | null>(null);
@@ -26,17 +34,26 @@ export default function Banner() {
     <div className="w-full bg-linear-to-r from-teal-500 to-cyan-500 px-6 py-10 text-center rounded-xl">
       <div className="max-w-3xl mx-auto">
         {banner.h1 && (
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-white">
+          <h1
+            className={`text-3xl sm:text-4xl font-bold mb-2 text-white ${isBangla(banner.h1) ? banglaFont.className : ""
+              }`}
+          >
             {banner.h1}
           </h1>
         )}
         {banner.h2 && (
-          <h2 className="text-xl sm:text-2xl font-semibold text-teal-800 mb-3">
+          <h2
+            className={`text-xl sm:text-2xl font-semibold text-teal-800 mb-3 ${isBangla(banner.h2) ? banglaFont.className : ""
+              }`}
+          >
             {banner.h2}
           </h2>
         )}
         {banner.p && (
-          <p className="text-teal-900/80 text-base max-w-xl mx-auto">
+          <p
+            className={`mx-auto max-w-xl text-base text-teal-900/80 ${isBangla(banner.p) ? banglaFont.className : ""
+              }`}
+          >
             {banner.p}
           </p>
         )}
