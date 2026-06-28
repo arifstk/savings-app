@@ -53,7 +53,7 @@ export default function AdminPage() {
 
   // Modal state
   const [modal, setModal] = useState<UserRow | null>(null);
-  const [editUser, setEditUser] = useState({ name: "", email: "", mobile: "" });
+  const [editUser, setEditUser] = useState({ name: "", email: "", mobile: "", role: "user" });
   const [userSaving, setUserSaving] = useState(false);
 
   // Subscription state
@@ -97,7 +97,7 @@ export default function AdminPage() {
   // Open modal
   const openModal = (user: UserRow) => {
     setModal(user);
-    setEditUser({ name: user.name, email: user.email, mobile: user.mobile ?? "" });
+    setEditUser({ name: user.name, email: user.email, mobile: user.mobile ?? "", role: user.role, });
     setEditSub(null);
     setNewSub({ month: monthOptions()[0], amount: "", date: new Date().toISOString().split("T")[0] });
     loadSubs(user._id);
@@ -125,54 +125,54 @@ export default function AdminPage() {
   };
 
   // Add new subscription
-  const handleAddSub = async () => {
-    if (!modal || !newSub.amount) { toast.error("Enter an amount"); return; }
-    setSubSaving(true);
-    try {
-      const res = await fetch("/api/admin/subscriptions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: modal._id, month: newSub.month, amount: Number(newSub.amount), date: newSub.date }),
-      });
-      const data = await res.json();
-      if (!res.ok) { toast.error(data.error); return; }
-      toast.success("Subscription added!");
-      setNewSub({ month: monthOptions()[0], amount: "", date: new Date().toISOString().split("T")[0] });
-      loadSubs(modal._id);
-    } catch { toast.error("Failed to add subscription"); }
-    finally { setSubSaving(false); }
-  };
+  // const handleAddSub = async () => {
+  //   if (!modal || !newSub.amount) { toast.error("Enter an amount"); return; }
+  //   setSubSaving(true);
+  //   try {
+  //     const res = await fetch("/api/admin/subscriptions", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ userId: modal._id, month: newSub.month, amount: Number(newSub.amount), date: newSub.date }),
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) { toast.error(data.error); return; }
+  //     toast.success("Subscription added!");
+  //     setNewSub({ month: monthOptions()[0], amount: "", date: new Date().toISOString().split("T")[0] });
+  //     loadSubs(modal._id);
+  //   } catch { toast.error("Failed to add subscription"); }
+  //   finally { setSubSaving(false); }
+  // };
 
   // Save edited subscription
-  const handleSubSave = async () => {
-    if (!editSub || !modal) return;
-    setSubSaving(true);
-    try {
-      const res = await fetch(`/api/admin/subscriptions/${editSub._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ month: editSub.month, amount: editSub.amount, date: editSub.date }),
-      });
-      const data = await res.json();
-      if (!res.ok) { toast.error(data.error); return; }
-      toast.success("Updated!");
-      setEditSub(null);
-      loadSubs(modal._id);
-    } catch { toast.error("Failed to update"); }
-    finally { setSubSaving(false); }
-  };
+  // const handleSubSave = async () => {
+  //   if (!editSub || !modal) return;
+  //   setSubSaving(true);
+  //   try {
+  //     const res = await fetch(`/api/admin/subscriptions/${editSub._id}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ month: editSub.month, amount: editSub.amount, date: editSub.date }),
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) { toast.error(data.error); return; }
+  //     toast.success("Updated!");
+  //     setEditSub(null);
+  //     loadSubs(modal._id);
+  //   } catch { toast.error("Failed to update"); }
+  //   finally { setSubSaving(false); }
+  // };
 
   // Delete subscription
-  const handleSubDelete = async (subId: string) => {
-    if (!modal) return;
-    if (!confirm("Delete this entry?")) return;
-    try {
-      const res = await fetch(`/api/admin/subscriptions/${subId}`, { method: "DELETE" });
-      if (!res.ok) { toast.error("Failed to delete"); return; }
-      toast.success("Deleted!");
-      loadSubs(modal._id);
-    } catch { toast.error("Failed to delete"); }
-  };
+  // const handleSubDelete = async (subId: string) => {
+  //   if (!modal) return;
+  //   if (!confirm("Delete this entry?")) return;
+  //   try {
+  //     const res = await fetch(`/api/admin/subscriptions/${subId}`, { method: "DELETE" });
+  //     if (!res.ok) { toast.error("Failed to delete"); return; }
+  //     toast.success("Deleted!");
+  //     loadSubs(modal._id);
+  //   } catch { toast.error("Failed to delete"); }
+  // };
 
   const filtered = users.filter(u =>
     u.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -254,7 +254,7 @@ export default function AdminPage() {
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
-                          
+
                         </button>
                       </td>
                     </tr>
@@ -289,7 +289,7 @@ export default function AdminPage() {
               {/* User Info Edit */}
               <div>
                 <h3 className="text-sm font-semibold text-gray-700 mb-3">User Info</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div>
                     <label className="block text-xs text-gray-500 mb-1">Name</label>
                     <input
@@ -317,6 +317,26 @@ export default function AdminPage() {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">
+                      Role
+                    </label>
+
+                    <select
+                      value={editUser.role}
+                      onChange={(e) =>
+                        setEditUser({
+                          ...editUser,
+                          role: e.target.value,
+                        })
+                      }
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+
                 </div>
                 <div className="flex justify-end mt-3">
                   <button

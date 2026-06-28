@@ -13,3 +13,6 @@ const AdminLockSchema = new Schema<IAdminLock>({
 const AdminLock = models.AdminLock || model<IAdminLock>("AdminLock", AdminLockSchema);
 
 export default AdminLock;
+
+
+// not used right now 

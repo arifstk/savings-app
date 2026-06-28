@@ -18,6 +18,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    // Auth check
     const session = await auth();
     if (!session?.user || session.user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -25,8 +26,9 @@ export async function PUT(
 
     const { id } = await params;
     const body = await req.json();
-    const parsed = schema.safeParse(body);
 
+    // Validate request body
+    const parsed = schema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
         { error: parsed.error.issues[0]?.message || "Invalid input" },
@@ -37,6 +39,14 @@ export async function PUT(
     const { name, email, mobile, role } = parsed.data;
     await dbConnect();
 
+    // ✅ Find target user first
+    const existingUser = await User.findById(id);
+
+    if (!existingUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Check duplicate email
     const emailTaken = await User.findOne({ email, _id: { $ne: id } });
     if (emailTaken) {
       return NextResponse.json(
@@ -45,22 +55,33 @@ export async function PUT(
       );
     }
 
+    // ✅ IMPORTANT SECURITY (prevent admin from remove own admin role)
+    if (session.user.email === existingUser.email && role && role !== "admin") {
+      return NextResponse.json(
+        {
+          error: "You cannot remove your own admin role",
+        },
+        { status: 400 },
+      );
+    }
+
+    // Update user
     const updated = await User.findByIdAndUpdate(
       id,
       {
-        name,
+        name: name.trim(),
         email: email.toLowerCase().trim(),
-        mobile: mobile || undefined,
+        mobile: mobile?.trim() || undefined,
         ...(role && { role }), // Safely updates role if passed from your Admin Dashboard
       },
       { new: true },
     ).select("name email mobile role isVerified createdAt");
 
-    if (!updated) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ user: updated });
+    return NextResponse.json({
+      success: true,
+      message: "User updated successfully",
+      user: updated,
+    });
   } catch (err) {
     console.error("Update user error:", err);
     return NextResponse.json(
@@ -69,4 +90,3 @@ export async function PUT(
     );
   }
 }
-
