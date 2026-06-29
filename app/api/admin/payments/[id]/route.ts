@@ -21,6 +21,7 @@ const MONTH_NAMES = [
   "Nov",
   "Dec",
 ];
+
 function displayMonth(ym: string) {
   const [y, m] = ym.split("-");
   return `${MONTH_NAMES[parseInt(m) - 1]} ${y}`;
@@ -58,128 +59,211 @@ export async function PUT(
 
     await payment.save();
 
-    // Send email notification only when status changes TO "paid"
+    // Send email only when status changes TO "paid"
     if (status === "paid" && previousStatus !== "paid") {
       try {
-        // Get user, period, and site settings in parallel
         const [user, period, settings] = await Promise.all([
           User.findById(payment.userId).select("name email").lean(),
-          SubscriptionPeriod.findById(payment.periodId).select("name").lean(),
+          SubscriptionPeriod.findById(payment.periodId)
+            .select("name startMonth endMonth")
+            .lean(),
           SiteSettings.findById("site-settings").lean(),
         ]);
 
         if (user?.email) {
           const orgName = settings?.orgName || "Organization";
+          const logoUrl = settings?.logoUrl || "";
           const paidDate = new Date().toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "long",
             year: "numeric",
           });
 
+          // Calculate previous total (all paid payments for this user EXCEPT current)
+          const previousPayments = await MonthlyPayment.find({
+            userId: payment.userId,
+            status: "paid",
+            _id: { $ne: payment._id },
+          }).lean();
+          const previousTotal = previousPayments.reduce((s, p) => s + p.fee, 0);
+          const newTotal = previousTotal + payment.fee;
+
+          // Period date range e.g. "Jan 2026 – Jun 2026"
+          const periodRange = period
+            ? `${displayMonth(period.startMonth)} – ${displayMonth(period.endMonth)}`
+            : "";
+
           await sendMail({
             to: user.email,
             subject: `✓ Payment confirmed — ${displayMonth(payment.month)}`,
             html: `
-              <!DOCTYPE html>
-              <html>
-              <head><meta charset="UTF-8"></head>
-              <body style="margin:0;padding:0;background:#f9f9f9;font-family:Arial,sans-serif;">
-                <table width="100%" cellpadding="0" style="padding:40px 20px;">
-                  <tr><td align="center">
-                    <table width="480" cellpadding="0"
-                      style="background:#ffffff;border-radius:12px;border:1px solid #e5e5e5;overflow:hidden;">
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif;">
+<table width="100%" cellpadding="0" style="padding:32px 16px;">
+<tr><td align="center">
+<table width="520" cellpadding="0"
+  style="background:#ffffff;border-radius:14px;border:1px solid #e5e7eb;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
 
-                      <!-- Header -->
-                      <tr>
-                        <td style="background:#0f766e;padding:24px 32px;">
-                          <p style="margin:0;color:#ffffff;font-size:18px;font-weight:bold;">
-                            ${orgName}
-                          </p>
-                          <p style="margin:4px 0 0;color:#99f6e4;font-size:13px;">
-                            Payment Confirmation
-                          </p>
-                        </td>
-                      </tr>
+  <!-- ── HEADER ── -->
+  <tr>
+    <td style="padding:15px 28px 0px;border-bottom:1px solid #111827;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <!-- Logo + Org name left -->
+          <td style="vertical-align:middle;">
+            <table cellpadding="0" cellspacing="0">
+              <tr>
+                ${
+                  logoUrl
+                    ? `
+                <td style="vertical-align:middle;padding-right:12px;">
+                  <img src="${logoUrl}" width="65" height="68"
+                    style="display:block;object-fit:contain;"
+                    alt="${orgName} logo"/>
+                </td>`
+                    : ""
+                }
+                <td style="vertical-align:middle;">
+                  <p style="margin:0;font-size:17px;font-weight:700;color:#111827;line-height:1.2;">
+                    ${orgName}
+                  </p>
+                  <p style="margin:3px 0 0;font-size:12px;color:#6b7280;">
+                    Subscription Payment Statement
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <!-- Period info right -->
+          <td style="text-align:right;vertical-align:middle;">
+            <p style="margin:0;font-size:13px;font-weight:700;color:#111827;">${period?.name ?? ""}</p>
+            <p style="margin: 0;font-size:11px;color:#6b7280;">${periodRange}</p>
+            <p style="margin: 0;font-size:11px;color:#6b7280;">Confirmed: ${paidDate}</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 
-                      <!-- Body -->
-                      <tr>
-                        <td style="padding:20px;">
-                          <p style="margin:0 0 8px;color:#374151;font-size:15px;">
-                            Dear <strong>${user.name}</strong>,
-                          </p>
-                          <p style="margin:0 0 24px;color:#6b7280;font-size:14px;">
-                            Your subscription payment has been confirmed. Here are the details:
-                          </p>
+  <!-- ── BODY ── -->
+  <tr>
+    <td style="padding:25px;">
 
-                          <!-- Payment details box -->
-                          <table width="100%" cellpadding="0"
-                            style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:24px;">
-                            <tr>
-                              <td style="padding:20px 24px;">
-                                <table width="100%" cellpadding="0">
-                                  <tr>
-                                    <td style="padding:6px 0;color:#6b7280;font-size:13px;">Period</td>
-                                    <td style="padding:6px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;">
-                                      ${period?.name ?? ""}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style="padding:6px 0;color:#6b7280;font-size:13px;">Month</td>
-                                    <td style="padding:6px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;">
-                                      ${displayMonth(payment.month)}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style="padding:6px 0;color:#6b7280;font-size:13px;">Amount</td>
-                                    <td style="padding:6px 0;color:#15803d;font-size:15px;font-weight:700;text-align:right;">
-                                      ${fmtTaka(payment.fee)}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style="padding:6px 0;color:#6b7280;font-size:13px;">Payment Date</td>
-                                    <td style="padding:6px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;">
-                                      ${paidDate}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style="padding:6px 0;color:#6b7280;font-size:13px;">Status</td>
-                                    <td style="padding:6px 0;text-align:right;">
-                                      <span style="background:#dcfce7;color:#15803d;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;">
-                                        ✓ Paid
-                                      </span>
-                                    </td>
-                                  </tr>
-                                </table>
-                              </td>
-                            </tr>
-                          </table>
+      <p style="margin:0 0 6px;color:#374151;font-size:15px;">
+        Dear <strong>${user.name}</strong>,
+      </p>
+      <p style="margin:0 0 24px;color:#6b7280;font-size:13px;">
+        Your subscription payment has been confirmed. Here are the details:
+      </p>
 
-                          <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.6;">
-                            This is an automated confirmation. Please keep this email for your records.
-                            If you have any questions, contact your organization admin.
-                          </p>
-                        </td>
-                      </tr>
+      <!-- Payment details box -->
+      <table width="100%" cellpadding="0" cellspacing="0"
+        style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:20px;">
+        <tr>
+          <td style="padding:18px 22px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:7px 0;color:#6b7280;font-size:13px;border-bottom:1px solid #d1fae5;">Period</td>
+                <td style="padding:7px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #d1fae5;">
+                  ${period?.name ?? ""}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:7px 0;color:#6b7280;font-size:13px;border-bottom:1px solid #d1fae5;">Month</td>
+                <td style="padding:7px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #d1fae5;">
+                  ${displayMonth(payment.month)}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:7px 0;color:#6b7280;font-size:13px;border-bottom:1px solid #d1fae5;">Amount</td>
+                <td style="padding:7px 0;color:#15803d;font-size:15px;font-weight:700;text-align:right;border-bottom:1px solid #d1fae5;">
+                  ${fmtTaka(payment.fee)}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:7px 0;color:#6b7280;font-size:13px;border-bottom:1px solid #d1fae5;">Payment Date</td>
+                <td style="padding:7px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #d1fae5;">
+                  ${paidDate}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:7px 0;color:#6b7280;font-size:13px;">Status</td>
+                <td style="padding:7px 0;text-align:right;">
+                  <span style="background:#dcfce7;color:#15803d;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:700;">
+                    ✓ Paid
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
 
-                      <!-- Footer -->
-                      <tr>
-                        <td style="background:#f9f9f9;padding:16px 32px;border-top:1px solid #eee;">
-                          <p style="margin:0;color:#aaa;font-size:12px;text-align:center;">
-                            ${orgName} · Automated payment notification
-                          </p>
-                        </td>
-                      </tr>
+      <!-- ── TOTAL SECTION ── -->
+      <table width="100%" cellpadding="0" cellspacing="0"
+        style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:20px;">
+        <tr>
+          <td style="padding:16px 22px;">
+            <p style="margin:0 0 12px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">
+              Payment Summary
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:5px 0;color:#6b7280;font-size:13px;">Previous total paid</td>
+                <td style="padding:5px 0;color:#374151;font-size:13px;font-weight:600;text-align:right;">
+                  ${fmtTaka(previousTotal)}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:5px 0;color:#6b7280;font-size:13px;">This month</td>
+                <td style="padding:5px 0;color:#15803d;font-size:13px;font-weight:600;text-align:right;">
+                  + ${fmtTaka(payment.fee)}
+                </td>
+              </tr>
+              <!-- Divider -->
+              <tr>
+                <td colspan="2" style="padding:6px 0;">
+                  <div style="border-top:1px solid #cbd5e1;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:5px 0;color:#111827;font-size:14px;font-weight:700;">Total Paid</td>
+                <td style="padding:5px 0;color:#0f766e;font-size:16px;font-weight:800;text-align:right;">
+                  ${fmtTaka(newTotal)}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
 
-                    </table>
-                  </td></tr>
-                </table>
-              </body>
-              </html>
+      <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.7;">
+        This is an automated confirmation. Please keep this email for your records.
+        If you have any questions, contact your organization admin.
+      </p>
+    </td>
+  </tr>
+
+  <!-- ── FOOTER ── -->
+  <tr>
+    <td style="background:#f9fafb;padding:14px 28px;border-top:1px solid #f1f5f9;">
+      <p style="margin:0;color:#9ca3af;font-size:12px;text-align:center;">
+        ${orgName} &middot; Automated payment notification
+      </p>
+    </td>
+  </tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
             `,
           });
         }
       } catch (mailErr) {
-        // Don't fail the request if email fails — just log it
         console.error("Payment confirmation email failed:", mailErr);
       }
     }

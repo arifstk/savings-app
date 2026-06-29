@@ -72,20 +72,20 @@ export default function SubscriptionsPage() {
         {user && (
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-3 py-2 md:px-6 md:py-5 mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center text-white text-lg font-bold shrink-0">
+              <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white text-lg font-bold shrink-0">
                 {user.name.charAt(0).toUpperCase()}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 flex-1">
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">Name</p>
+                <div className='flex flex-start items-center gap-3'>
+                  <p className="text-xs text-gray-400 uppercase tracking-wide">Name:</p>
                   <p className="text-sm font-semibold text-gray-800">{user.name}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">Email</p>
+                <div className='flex flex-start items-center gap-3'>
+                  <p className="text-xs text-gray-400 uppercase tracking-wide">Email:</p>
                   <p className="text-sm text-gray-700">{user.email}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">Mobile</p>
+                <div className='flex flex-start items-center gap-3'>
+                  <p className="text-xs text-gray-400 uppercase tracking-wide">Mobile:</p>
                   <p className="text-sm text-gray-700">{user.mobile || "—"}</p>
                 </div>
               </div>

@@ -359,7 +359,7 @@ export default function ProfilePage() {
           </form>
         </Section>
 
-        {/* ── Change password ────────────────────────────────────── */}
+        {/* ── Change password ───────────────────────── */}
         {!isGoogleUser ? (
           <Section
             title="Change Password"
@@ -454,7 +454,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={pwSaving || pw.newPassword !== pw.confirmPassword || !pw.currentPassword}
-                  className="bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium px-6 py-2.5 rounded-lg text-sm transition"
+                  className="bg-linear-to-r from-teal-500 to-cyan-500 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer text-white font-medium px-6 py-2.5 rounded-lg text-sm transition"
                 >
                   {pwSaving ? "Changing…" : "Change Password"}
                 </button>

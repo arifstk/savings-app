@@ -108,20 +108,20 @@ export default function UserPrintPage() {
       <div className="max-w-2xl mx-auto px-8 py-8 bg-white min-h-screen">
 
         {/* Header */}
-        <div className="flex items-center justify-between pb-5 border-b-2 border-gray-800 mb-6">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-800 mb-5">
           <div className="flex items-center gap-4">
             {settings.logoUrl ? (
-              <Image src={settings.logoUrl} alt="Logo" width={56} height={56}
+              <Image src={settings.logoUrl} alt="Logo" width={65} height={68}
                 className="object-contain" referrerPolicy="no-referrer" />
             ) : (
               <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">Logo</div>
             )}
             <div>
-              <h1 className="text-xl font-bold text-gray-900">{settings.orgName || "Organization"}</h1>
+              <h1 className="text-lg font-bold text-gray-900">{settings.orgName || "Organization"}</h1>
               <p className="text-sm text-gray-500">Subscription Payment Statement</p>
             </div>
           </div>
-          <div className="text-right text-xs text-gray-500 space-y-0.5">
+          <div className="text-right text-xs text-gray-500">
             <p className="font-semibold text-gray-700">
               {period ? `${period.name}` : "Payment Statement"}
             </p>

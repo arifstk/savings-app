@@ -119,7 +119,7 @@ export default function PeriodDetailPage() {
             <p className="text-xs text-amber-600 mt-1">{pendingRows.length} month{pendingRows.length !== 1 ? "s" : ""}</p>
           </div>
           <div className="bg-blue-50 border border-blue-200 rounded-2xl px-5 py-4 text-center">
-            <p className="text-xs text-blue-600 uppercase tracking-wide mb-1">Total Due</p>
+            <p className="text-xs text-blue-600 uppercase tracking-wide mb-1">Total</p>
             <p className="text-xl font-bold text-blue-700">{fmtTaka(totalPaid + totalPending)}</p>
             <p className="text-xs text-blue-600 mt-1">{rows.length} month{rows.length !== 1 ? "s" : ""} total</p>
           </div>
