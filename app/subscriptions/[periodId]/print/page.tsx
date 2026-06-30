@@ -87,7 +87,7 @@ export default function UserPrintPage() {
     <>
       <style>{`
         @media print {
-          @page { size: A4; margin: 18mm 15mm; }
+          @page { size: A4; margin: 10mm 15mm 3mm; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           .no-print { display: none !important; }
         }
@@ -136,7 +136,7 @@ export default function UserPrintPage() {
 
         {/* User info */}
         {user && (
-          <div className="border border-gray-200 rounded-xl px-5 py-4 mb-6 grid grid-cols-3 gap-3 bg-gray-50">
+          <div className="border border-gray-200 rounded-xl px-5 py-2 mb-6 grid grid-cols-3 gap-3 bg-gray-50">
             <div>
               <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Name</p>
               <p className="text-sm font-bold text-gray-800">{user.name}</p>
@@ -154,30 +154,30 @@ export default function UserPrintPage() {
 
         {/* Summary */}
         <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="border border-green-200 bg-green-50 rounded-lg p-3 text-center">
+          <div className="border border-green-200 bg-green-50 rounded-lg px-3 py-1.5 text-center">
             <p className="text-xs text-green-600 uppercase tracking-wide">Total Paid</p>
             <p className="text-base font-bold text-green-700 mt-0.5">{fmtTaka(totalPaid)}</p>
             <p className="text-xs text-green-600 mt-0.5">{paidRows.length} months</p>
           </div>
-          <div className="border border-amber-200 bg-amber-50 rounded-lg p-3 text-center">
+          <div className="border border-amber-200 bg-amber-50 rounded-lg px-3 py-1.5 text-center">
             <p className="text-xs text-amber-600 uppercase tracking-wide">Pending</p>
             <p className="text-base font-bold text-amber-700 mt-0.5">{fmtTaka(totalPending)}</p>
           </div>
-          <div className="border border-blue-200 bg-blue-50 rounded-lg p-3 text-center">
+          <div className="border border-blue-200 bg-blue-50 rounded-lg px-3 py-1.5 text-center">
             <p className="text-xs text-blue-600 uppercase tracking-wide">Grand Total</p>
             <p className="text-base font-bold text-blue-700 mt-0.5">{fmtTaka(totalPaid + totalPending)}</p>
           </div>
         </div>
 
         {/* Table */}
-        <table className="w-full text-sm border-collapse mb-8">
+        <table className="w-full border-collapse mb-2 text-sm">
           <thead>
             <tr style={{ background: "#1f2937", color: "white" }}>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold w-10">#</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold">Month</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold">Payment Date</th>
-              <th className="px-4 py-2.5 text-right text-xs font-semibold">Amount</th>
-              <th className="px-4 py-2.5 text-center text-xs font-semibold">Status</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold w-10">S.I</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold">Month</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold">Payment Date</th>
+              <th className="px-4 py-2 text-right text-xs font-semibold">Amount</th>
+              <th className="px-4 py-2 text-center text-xs font-semibold">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -190,15 +190,15 @@ export default function UserPrintPage() {
             ) : rows.map((row, idx) => (
               <tr key={row._id}
                 style={{ background: idx % 2 === 0 ? "#ffffff" : "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
-                <td className="px-4 py-2.5 text-gray-400 text-xs">{row.serial}</td>
-                <td className="px-4 py-2.5 font-medium text-gray-800">{displayMonth(row.month)}</td>
-                <td className="px-4 py-2.5 text-gray-600 text-xs">
+                <td className="px-4 py-2 text-gray-400 text-xs">{row.serial}</td>
+                <td className="px-4 py-2 font-medium text-gray-800">{displayMonth(row.month)}</td>
+                <td className="px-4 py-2 text-gray-600 text-xs">
                   {row.status === "paid" ? fmtDate(row.paidAt) : "—"}
                 </td>
-                <td className="px-4 py-2.5 text-right font-semibold text-gray-800">
+                <td className="px-4 py-2 text-right font-semibold text-gray-800">
                   {fmtTaka(row.fee)}
                 </td>
-                <td className="px-4 py-2.5 text-center">
+                <td className="px-4 py-2 text-center">
                   <span style={{
                     display: "inline-block", padding: "2px 8px", borderRadius: 999,
                     fontSize: 11, fontWeight: 600,
@@ -214,7 +214,7 @@ export default function UserPrintPage() {
           <tfoot>
             <tr style={{ background: "#1f2937", color: "white" }}>
               <td colSpan={3} className="px-4 py-3 text-sm font-bold text-right">Total Paid =</td>
-              <td className="px-4 py-3 text-sm font-bold text-right" style={{ color: "#4ade80" }}>
+              <td className="px-4 py-3 text-sm font-bold text-right">
                 {fmtTaka(totalPaid)}
               </td>
               <td />
