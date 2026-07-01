@@ -23,9 +23,9 @@ export default function Footer() {
           <span className='text-zinc-200'> | </span>
           <Link href="/contact" className="hover:text-zinc-600 transition-colors">Contact</Link>
           <span className='text-zinc-200'> | </span>
-          <Link href="/privacy" className="hover:text-zinc-600 transition-colors">Privacy Policy</Link>
+          <Link href="/privacy-policy" className="hover:text-zinc-600 transition-colors">Privacy Policy</Link>
           <span className='text-zinc-200'> | </span>
-          <Link href="/terms" className="hover:text-zinc-600 transition-colors">Terms of Service</Link>
+          <Link href="/terms-and-conditions" className="hover:text-zinc-600 transition-colors">Terms of Service</Link>
         </div>
 
         <div className="flex flex-col gap-0 text-xs text-zinc-400">

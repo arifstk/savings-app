@@ -62,7 +62,7 @@ export default function OurMembersPage() {
 
         {/* Page header */}
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900">Our Members</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Community Members</h1>
           <p className="text-gray-500 text-sm mt-2">
             {members.length} member{members.length !== 1 ? "s" : ""} in our community
           </p>
