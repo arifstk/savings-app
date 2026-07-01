@@ -31,7 +31,7 @@ export default function Banner() {
   if (!banner.h1 && !banner.h2 && !banner.p) return null;
 
   return (
-    <div className="w-full min-h-[70vh] bg-linear-to-r from-teal-500 to-cyan-500 px-6 py-10 text-center items-center rounded-xl">
+    <div className="w-full min-h-[60vh] bg-linear-to-r from-teal-500 to-cyan-500 px-6 py-10 text-center items-center rounded-xl">
       <div className="max-w-3xl mx-auto">
         {banner.h1 && (
           <h1

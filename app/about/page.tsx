@@ -12,7 +12,7 @@ export default async function AboutPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">About Us</h1>
+      <h1 className="text-3xl text-center font-bold text-gray-900 mb-8">About Us</h1>
       {sections.length === 0 ? (
         <p className="text-gray-400 text-sm">Content coming soon.</p>
       ) : (

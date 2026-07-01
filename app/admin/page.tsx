@@ -124,56 +124,6 @@ export default function AdminPage() {
     finally { setUserSaving(false); }
   };
 
-  // Add new subscription
-  // const handleAddSub = async () => {
-  //   if (!modal || !newSub.amount) { toast.error("Enter an amount"); return; }
-  //   setSubSaving(true);
-  //   try {
-  //     const res = await fetch("/api/admin/subscriptions", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ userId: modal._id, month: newSub.month, amount: Number(newSub.amount), date: newSub.date }),
-  //     });
-  //     const data = await res.json();
-  //     if (!res.ok) { toast.error(data.error); return; }
-  //     toast.success("Subscription added!");
-  //     setNewSub({ month: monthOptions()[0], amount: "", date: new Date().toISOString().split("T")[0] });
-  //     loadSubs(modal._id);
-  //   } catch { toast.error("Failed to add subscription"); }
-  //   finally { setSubSaving(false); }
-  // };
-
-  // Save edited subscription
-  // const handleSubSave = async () => {
-  //   if (!editSub || !modal) return;
-  //   setSubSaving(true);
-  //   try {
-  //     const res = await fetch(`/api/admin/subscriptions/${editSub._id}`, {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ month: editSub.month, amount: editSub.amount, date: editSub.date }),
-  //     });
-  //     const data = await res.json();
-  //     if (!res.ok) { toast.error(data.error); return; }
-  //     toast.success("Updated!");
-  //     setEditSub(null);
-  //     loadSubs(modal._id);
-  //   } catch { toast.error("Failed to update"); }
-  //   finally { setSubSaving(false); }
-  // };
-
-  // Delete subscription
-  // const handleSubDelete = async (subId: string) => {
-  //   if (!modal) return;
-  //   if (!confirm("Delete this entry?")) return;
-  //   try {
-  //     const res = await fetch(`/api/admin/subscriptions/${subId}`, { method: "DELETE" });
-  //     if (!res.ok) { toast.error("Failed to delete"); return; }
-  //     toast.success("Deleted!");
-  //     loadSubs(modal._id);
-  //   } catch { toast.error("Failed to delete"); }
-  // };
-
   const filtered = users.filter(u =>
     u.name.toLowerCase().includes(search.toLowerCase()) ||
     u.email.toLowerCase().includes(search.toLowerCase()) ||
@@ -187,13 +137,13 @@ export default function AdminPage() {
   );
 
   return (
-    <div className="min-h-screen py-7">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">User Management</p>
+          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
+          <p className="text-sm text-gray-500 mt-1">Manage your users and their permissions</p>
         </div>
 
         {/* Search */}
