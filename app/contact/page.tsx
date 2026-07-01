@@ -20,6 +20,13 @@ const SUBJECTS = [
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all";
 
+interface InfoCard {
+  icon: string;
+  title: string;
+  desc: string;
+  sub: string;
+}
+
 export default function ContactPage() {
   const { data: session } = useSession();
 
@@ -74,25 +81,17 @@ export default function ContactPage() {
     }
   };
 
-  // Store info from admin panel
-  const [storeSettings, setStoreSettings] = useState<{
-    storeEmail: string;
-    storePhone: string;
-    storeAddress: string;
-    facebook: string;
-    instagram: string;
-    twitter: string;
-    youtube: string;
-  } | null>(null);
+  // Info cards — controlled by admin panel
+  const [cards, setCards] = useState<InfoCard[]>([]);
+  const [cardsLoading, setCardsLoading] = useState(true);
 
-  const [settingsLoading, setSettingsLoading] = useState(true);
   useEffect(() => {
-    fetch("/api/admin/settings")
+    fetch("/api/admin/contact-info")
       .then((r) => r.json())
       .then((data) => {
-        if (data.success) setStoreSettings(data.settings);
+        if (data.cards) setCards(data.cards);
       })
-      .finally(() => setSettingsLoading(false));
+      .finally(() => setCardsLoading(false));
   }, []);
 
   // ── Success state ──
@@ -109,7 +108,7 @@ export default function ContactPage() {
           <p className="text-sm text-slate-500 mb-6 leading-relaxed">
             Thank you for reaching out, <span className="font-semibold text-slate-700">{form.name}</span>!
             We've received your message and will get back to you at{" "}
-            <span className="font-semibold text-indigo-600">{form.email}</span> shortly.
+            <span className="font-semibold text-teal-500">{form.email}</span> shortly.
           </p>
           <div className="flex flex-col gap-3">
             <button
@@ -117,7 +116,7 @@ export default function ContactPage() {
                 setSubmitted(false);
                 setForm({ name: "", email: "", subject: "", message: "" });
               }}
-              className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all"
+              className="w-full py-2.5 rounded-xl bg-linear-to-r from-teal-500 to-cyan-500 hover:bg-indigo-500 text-white text-sm font-bold transition-all"
             >
               Send Another Message
             </button>
@@ -152,7 +151,7 @@ export default function ContactPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* ── LEFT: Info cards ── */}
         <div className="space-y-4">
-          {settingsLoading ? (
+          {cardsLoading ? (
             // Skeleton
             Array.from({ length: 4 }).map((_, i) => (
               <div
@@ -167,54 +166,30 @@ export default function ContactPage() {
                 </div>
               </div>
             ))
+          ) : cards.length === 0 ? (
+            <div className="bg-white rounded-md border border-slate-100 shadow-sm p-5 text-center text-slate-400 text-sm">
+              No contact info configured yet.
+            </div>
           ) : (
-            <>
-              {/* Info cards */}
-              {[
-                {
-                  icon: "📧",
-                  title: "Email Us",
-                  desc: storeSettings?.storeEmail || "—",
-                  sub: "We reply within 24 hours",
-                },
-                {
-                  icon: "📞",
-                  title: "Call Us",
-                  desc: storeSettings?.storePhone || "—",
-                  sub: "Mon–Sat, 9am–6pm",
-                },
-                {
-                  icon: "📍",
-                  title: "Visit Us",
-                  desc: storeSettings?.storeAddress || "—",
-                  sub: "Come say hello",
-                },
-                {
-                  icon: "⏱",
-                  title: "Response Time",
-                  desc: "Within 24 hours",
-                  sub: "Usually much faster",
-                },
-              ].map((info) => (
-                <div
-                  key={info.title}
-                  className="bg-white rounded-md border border-slate-100 shadow-sm p-5 flex items-start gap-4"
-                >
-                  <div className="w-10 h-10 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xl shrink-0">
-                    {info.icon}
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      {info.title}
-                    </p>
-                    <p className="text-sm font-bold text-slate-800 mt-0.5">
-                      {info.desc}
-                    </p>
-                    <p className="text-xs text-slate-400 mt-0.5">{info.sub}</p>
-                  </div>
+            cards.map((info, i) => (
+              <div
+                key={`${info.title}-${i}`}
+                className="bg-white rounded-md border border-slate-100 shadow-sm p-5 flex items-start gap-4"
+              >
+                <div className="w-10 h-10 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xl shrink-0">
+                  {info.icon}
                 </div>
-              ))}
-            </>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    {info.title}
+                  </p>
+                  <p className="text-sm font-bold text-slate-800 mt-0.5">
+                    {info.desc}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-0.5">{info.sub}</p>
+                </div>
+              </div>
+            ))
           )}
         </div>
 
@@ -299,7 +274,7 @@ export default function ContactPage() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full py-3.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 rounded-2xl bg-linear-to-r from-teal-500 to-cyan-500 text-white hover:bg-indigo-500 font-bold text-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
             >
               {loading ? (
                 <>

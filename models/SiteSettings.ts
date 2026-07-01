@@ -1,3 +1,5 @@
+// models/SiteSettings.ts
+
 import { Schema, models, model } from "mongoose";
 
 export interface ISiteSettings {
