@@ -8,7 +8,7 @@ export default async function Home() {
   const session = await auth();
 
   return (
-    <div className="flex-1 flex flex-col pt-10">
+    <div className="flex-1 flex flex-col pt-3">
 
       {/* Banner - fully controlled by admin */}
       <Banner />

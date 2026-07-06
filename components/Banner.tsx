@@ -36,11 +36,11 @@ export default function Banner() {
   return (
     <div>
       {(role === "user" || role === "admin") && (
-        <div className="w-full min-h-[60vh] bg-linear-to-r from-teal-500 to-cyan-500 px-6 py-10 text-center items-center rounded-xl">
+        <div className="w-full min-h-[40vh] md:min-h-[80vh] bg-linear-to-b from-black/50 to-white/10 px-6 py-13 text-center items-center rounded-xl">
           <div className="max-w-3xl mx-auto">
             {banner.h1 && (
               <h1
-                className={`text-3xl sm:text-5xl font-bold mb-2 text-white text-shadow-gray-700 ${isBangla(banner.h1) ? banglaFont.className : ""
+                className={`text-3xl sm:text-5xl font-bold mb-2 ${isBangla(banner.h1) ? banglaFont.className : ""
                   }`}
               >
                 {banner.h1}
@@ -48,7 +48,7 @@ export default function Banner() {
             )}
             {banner.h2 && (
               <h2
-                className={`text-2xl sm:text-3xl font-semibold text-white text-shadow-gray-700 mb-3 ${isBangla(banner.h2) ? banglaFont.className : ""
+                className={`text-2xl sm:text-3xl font-semibold mb-3 ${isBangla(banner.h2) ? banglaFont.className : ""
                   }`}
               >
                 {banner.h2}
@@ -56,7 +56,7 @@ export default function Banner() {
             )}
             {banner.p && (
               <p
-                className={`mx-auto max-w-xl text-xl text-white text-shadow-gray-700 ${isBangla(banner.p) ? banglaFont.className : ""
+                className={`mx-auto max-w-xl text-xl ${isBangla(banner.p) ? banglaFont.className : ""
                   }`}
               >
                 {banner.p}
