@@ -48,7 +48,7 @@ export default function Banner() {
             )}
             {banner.h2 && (
               <h2
-                className={`text-xl sm:text-3xl font-semibold text-white text-shadow-gray-700 mb-3 ${isBangla(banner.h2) ? banglaFont.className : ""
+                className={`text-2xl sm:text-3xl font-semibold text-white text-shadow-gray-700 mb-3 ${isBangla(banner.h2) ? banglaFont.className : ""
                   }`}
               >
                 {banner.h2}
@@ -56,7 +56,7 @@ export default function Banner() {
             )}
             {banner.p && (
               <p
-                className={`mx-auto max-w-xl text-base text-white text-shadow-gray-700 ${isBangla(banner.p) ? banglaFont.className : ""
+                className={`mx-auto max-w-xl text-xl text-white text-shadow-gray-700 ${isBangla(banner.p) ? banglaFont.className : ""
                   }`}
               >
                 {banner.p}
