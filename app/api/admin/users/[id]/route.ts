@@ -10,7 +10,7 @@ const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(80),
   email: z.string().email("Enter a valid email"),
   mobile: z.string().optional().or(z.literal("")),
-  role: z.enum(["user", "admin"]).optional(), // Added role option to update dynamically
+  role: z.enum(["user", "admin"]).optional(),
 });
 
 export async function PUT(
@@ -55,7 +55,7 @@ export async function PUT(
       );
     }
 
-    // ✅ IMPORTANT SECURITY (prevent admin from remove own admin role)
+    // ✅ prevent admin from remove own admin role
     if (session.user.email === existingUser.email && role && role !== "admin") {
       return NextResponse.json(
         {
@@ -84,6 +84,50 @@ export async function PUT(
     });
   } catch (err) {
     console.error("Update user error:", err);
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    // 1. Authenticate and check for admin role permissions
+    const session = await auth();
+    if (!session?.user || session.user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = await params;
+    await dbConnect();
+
+    // 2. Locate targeted user in the database
+    const existingUser = await User.findById(id);
+    if (!existingUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // 3. Security guard preventing self-deletion by mistake
+    if (session.user.email === existingUser.email) {
+      return NextResponse.json(
+        { error: "You cannot delete your own admin account" },
+        { status: 400 },
+      );
+    }
+
+    // 4. Proceed with document deletion
+    await User.findByIdAndDelete(id);
+
+    return NextResponse.json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (err) {
+    console.error("Delete user error:", err);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 },

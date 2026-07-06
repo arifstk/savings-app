@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-/* ─── Types ─────────────────────────────────────────────────────── */
+/* ─── Types ────────────────────── */
 interface UserRow {
   _id: string;
   name: string;
@@ -124,6 +124,35 @@ export default function AdminPage() {
     finally { setUserSaving(false); }
   };
 
+  // Delete User 
+  const handleDeleteUser = async (userId: string, userEmail: string) => {
+    if (session?.user?.email === userEmail) {
+      toast.error("You cannot delete your own admin account!");
+      return;
+    }
+
+    if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error || "Failed to delete user");
+        return;
+      }
+
+      toast.success("User deleted successfully!");
+      loadUsers(); // Refresh layout
+    } catch {
+      toast.error("An error occurred while deleting the user");
+    }
+  };
+
   const filtered = users.filter(u =>
     u.name.toLowerCase().includes(search.toLowerCase()) ||
     u.email.toLowerCase().includes(search.toLowerCase()) ||
@@ -196,17 +225,32 @@ export default function AdminPage() {
                           {user.role}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-center">
-                        <button
-                          onClick={() => openModal(user)}
-                          className="inline-flex items-center justify-center bg-linear-to-r from-teal-500 to-cyan-500  hover:bg-teal-600 text-white text-xs font-medium p-2 rounded-lg transition cursor-pointer"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
 
-                        </button>
+                      <td className="px-5 py-4 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => openModal(user)}
+                            className="inline-flex items-center justify-center bg-linear-to-r from-teal-500 to-cyan-500 hover:bg-teal-600 text-white text-xs font-medium p-2 rounded-lg transition cursor-pointer"
+                            title="Edit User"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                          </button>
+
+                          <button
+                            onClick={() => handleDeleteUser(user._id, user.email)}
+                            className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs font-medium p-2 rounded-lg transition cursor-pointer"
+                            title="Delete User"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
                       </td>
+
+
                     </tr>
                   ))}
                 </tbody>
