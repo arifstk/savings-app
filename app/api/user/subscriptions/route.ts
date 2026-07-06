@@ -28,7 +28,7 @@ export async function GET() {
     const periodIds = [...new Set(payments.map((p) => p.periodId.toString()))];
     const periods = await SubscriptionPeriod.find({ _id: { $in: periodIds } })
       .select("name startMonth endMonth")
-      .sort({ startMonth: -1 })
+      .sort({ createdAt: -1 })
       .lean();
 
     // Build per-period summaries
