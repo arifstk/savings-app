@@ -1,3 +1,5 @@
+// app/api/admin/reports/route.ts
+
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
