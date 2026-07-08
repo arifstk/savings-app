@@ -97,14 +97,14 @@ export async function PUT(
             to: user.email,
             subject: `✓ Payment confirmed — ${displayMonth(payment.month)}`,
             html: `
-<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif;">
-<table width="100%" cellpadding="0" style="padding:32px 16px;">
-<tr><td align="center">
-<table width="520" cellpadding="0"
-  style="background:#ffffff;border-radius:14px;border:1px solid #e5e7eb;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+              <!DOCTYPE html>
+              <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+              <html>
+              <body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif;">
+              <table width="100%" cellpadding="0" style="padding:32px 16px;">
+                <tr><td align="center">
+                <table width="520" cellpadding="0"
+                style="background:#ffffff;border-radius:14px;border:1px solid #e5e7eb;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
 
   <!-- ── HEADER ── -->
   <tr>

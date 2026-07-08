@@ -1,7 +1,69 @@
+// // lib/mail.ts
+
+// import nodemailer from "nodemailer";
+
+// const transporter = nodemailer.createTransport({
+//   from: `"${process.env.EMAIL_FROM_NAME || "App"}" <${process.env.EMAIL_FROM}>`,
+//   host: process.env.EMAIL_SERVER_HOST,
+//   port: Number(process.env.EMAIL_SERVER_PORT || 587),
+//   secure: Number(process.env.EMAIL_SERVER_PORT) === 465,
+//   auth: {
+//     user: process.env.EMAIL_SERVER_USER,
+//     pass: process.env.EMAIL_SERVER_PASSWORD,
+//   },
+// });
+
+// // Generic send mail — used by OTP, password reset, etc.
+// export async function sendMail({
+//   to,
+//   subject,
+//   html,
+// }: {
+//   from: string;
+//   to: string;
+//   subject: string;
+//   html: string;
+// }) {
+//   return transporter.sendMail({
+//     from: process.env.EMAIL_FROM || "Taqwa Savings",
+//     to,
+//     subject,
+//     html,
+//   });
+// }
+
+// // Password reset email (kept for backwards compatibility)
+// export async function sendPasswordResetEmail(to: string, resetUrl: string) {
+//   return sendMail({
+//     from: process.env.EMAIL_FROM || "Taqwa Savings",
+//     to,
+//     subject: "Reset your password",
+//     html: `
+//       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+//         <h2>Password Reset Request</h2>
+//         <p>Click the button below to reset your password. This link expires in 1 hour.</p>
+//         <p style="text-align:center; margin: 32px 0;">
+//           <a href="${resetUrl}" style="background:#4f46e5;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
+//             Reset Password
+//           </a>
+//         </p>
+//         <p>If you didn't request this, you can safely ignore this email.</p>
+//         <p style="color:#888;font-size:12px;">Or copy this link: ${resetUrl}</p>
+//       </div>
+//     `,
+//   });
+// }
+
+
+
+
+
+
+// lib/mail.ts
+
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  from: `"${process.env.EMAIL_FROM_NAME || "App"}" <${process.env.EMAIL_FROM}>`,
   host: process.env.EMAIL_SERVER_HOST,
   port: Number(process.env.EMAIL_SERVER_PORT || 587),
   secure: Number(process.env.EMAIL_SERVER_PORT) === 465,
@@ -10,6 +72,9 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_SERVER_PASSWORD,
   },
 });
+
+// Helper to construct the global sender header string cleanly
+const GLOBAL_FROM = `"${process.env.EMAIL_FROM_NAME || "Taqwa Savings"}" <${process.env.EMAIL_FROM}>`;
 
 // Generic send mail — used by OTP, password reset, etc.
 export async function sendMail({
@@ -22,7 +87,7 @@ export async function sendMail({
   html: string;
 }) {
   return transporter.sendMail({
-    from: process.env.EMAIL_FROM || "no-reply@example.com",
+    from: GLOBAL_FROM,
     to,
     subject,
     html,

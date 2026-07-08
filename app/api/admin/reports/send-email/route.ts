@@ -78,7 +78,7 @@ export async function POST(req: Request) {
       .sort({ month: 1 })
       .lean();
 
-    // 3. Compute Summary Metrics
+    // Compute Summary Metrics
     const totalPaid = payments
       .filter((p) => p.status === "paid")
       .reduce((s, p) => s + p.fee, 0);
@@ -113,19 +113,19 @@ export async function POST(req: Request) {
     const mailOptions = {
       from: `"Taqwa Savings" <${process.env.EMAIL_FROM}>`, // SMTP_USER
       to: user.email,
-      subject: `Subscription Report: ${period.name}`,
+      subject: `Yearly Subscription Report: ${period.name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
           <h2 style="color: #0d9488; margin-bottom: 5px;">Hello ${user.name},</h2>
-          <p style="color: #666; font-size: 15px; margin-top: 0;">Your statement report for <strong>${period.name}</strong> has been issued.</p>
+          <p style="color: #666; font-size: 15px; margin-top: 0;">Your yearly statement for <strong>${period.name}</strong> has been issued. <span style="color: #0d9488;"> All the money you have deposited during this period has been refunded to you.</span></p>
           
-          <div style="display: flex; gap: 10px; margin: 20px 0;">
-            <div style=" background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; text-align: center;">
+          <div style="display: flex; gap: 20px; justify-center: space-between; margin: 20px 0;">
+            <div style="flex: 1; background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; text-align: center;">
               <span style="font-size: 11px; color: #166534; text-transform: uppercase;">Total Paid</span>
               <div style="font-size: 16px; font-weight: bold; color: #15803d; margin-top: 4px;">Tk. ${totalPaid.toLocaleString("en-BD")}</div>
             </div>
-            <div style=" background-color: #fffbeb; border: 1px solid #fef3c7; padding: 12px; border-radius: 8px; text-align: center;">
-              <span style="font-size: 11px; color: #92400e; text-transform: uppercase;">Pending Due</span>
+            <div style="flex: 1; background-color: #fffbeb; border: 1px solid #fef3c7; padding: 12px; border-radius: 8px; text-align: center;">
+              <span style="font-size: 11px; color: #92400e; text-transform: uppercase;">Total Due</span>
               <div style="font-size: 16px; font-weight: bold; color: #b45309; margin-top: 4px;">Tk. ${totalPending.toLocaleString("en-BD")}</div>
             </div>
           </div>
