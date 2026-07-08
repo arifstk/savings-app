@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
+  from: `"${process.env.EMAIL_FROM_NAME || "App"}" <${process.env.EMAIL_FROM}>`,
   host: process.env.EMAIL_SERVER_HOST,
   port: Number(process.env.EMAIL_SERVER_PORT || 587),
   secure: Number(process.env.EMAIL_SERVER_PORT) === 465,
