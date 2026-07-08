@@ -19,6 +19,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const paidDate = new Date().toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+});
+
 const MONTH_NAMES = [
   "Jan",
   "Feb",
@@ -117,7 +123,7 @@ export async function POST(req: Request) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
           <h2 style="color: #0d9488; margin-bottom: 5px;">Hello ${user.name},</h2>
-          <p style="color: #666; font-size: 15px; margin-top: 0;">Your yearly statement for <strong>${period.name}</strong> has been issued. <span style="color: #0d9488;"> All the money you have deposited during this period has been refunded to you.</span></p>
+          <p style="color: #666; font-size: 15px; margin-top: 0;">Your yearly statement for <strong>${period.name}</strong> has been issued. <span style="color: #0d9488;"> All the money you have deposited during this period has been refunded to you on <strong>${paidDate}</strong>.</span></p>
           
           <div style="display: flex; gap: 20px; justify-center: space-between; margin: 20px 0;">
             <div style="flex: 1; background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; text-align: center;">
