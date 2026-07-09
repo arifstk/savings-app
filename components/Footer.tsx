@@ -11,7 +11,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-white text-zinc-900 pt-10">
-      <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div className="max-w-6xl mx-auto px-2 md:px-6 pb-4 flex flex-col sm:flex-row justify-between items-center gap-0.5 md:gap-4">
         <p className="text-xs text-zinc-400">
           &copy; {currentYear} Taqwa Savings. All rights reserved.
         </p>
