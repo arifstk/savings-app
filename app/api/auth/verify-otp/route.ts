@@ -2,13 +2,10 @@
 
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
-import Otp from "@/models/Otp";
-import User from "@/models/User";
-import { verifyOtpHash } from "@/lib/otp";
 
 export async function POST(req: Request) {
   try {
-    const { email, otp } = await req.json();
+    const { email, otp, mode } = await req.json();
 
     if (!email || !otp) {
       return NextResponse.json(
@@ -19,16 +16,15 @@ export async function POST(req: Request) {
 
     await dbConnect();
 
-    const otpRecord = await Otp.findOne({
-      email: email.toLowerCase().trim(),
-    });
+    // Dynamically import models to avoid SSR issues
+    const Otp = (await import("@/models/Otp")).default;
+    const User = (await import("@/models/User")).default;
+
+    const otpRecord = await Otp.findOne({ email: email.toLowerCase().trim() });
 
     if (!otpRecord) {
       return NextResponse.json(
-        {
-          error: "OTP expired or not found. Please try again.",
-          clearOtp: false,
-        },
+        { error: "OTP expired. Please request a new one.", clearOtp: false },
         { status: 400 },
       );
     }
@@ -37,14 +33,15 @@ export async function POST(req: Request) {
       await Otp.deleteOne({ email });
       return NextResponse.json(
         {
-          error: "Too many wrong attempts. Please try again.",
+          error: "Too many wrong attempts. Please request a new OTP.",
           clearOtp: false,
         },
         { status: 400 },
       );
     }
 
-    const isValid = await verifyOtpHash(otp, otpRecord.otp);
+    const bcrypt = (await import("bcryptjs")).default;
+    const isValid = await bcrypt.compare(otp, otpRecord.otp);
 
     if (!isValid) {
       otpRecord.attempts += 1;
@@ -59,14 +56,68 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ OTP valid — mark email as verified
-    await User.updateOne(
-      { email: email.toLowerCase().trim() },
-      { $set: { emailVerified: true } },
-    );
-
-    // Delete used OTP
+    // OTP is correct — delete it
     await Otp.deleteOne({ email });
+
+    // On registration: mark user as verified
+    if (mode === "register") {
+      const user = await User.findOneAndUpdate(
+        { email: email.toLowerCase().trim() },
+        { isVerified: true },
+        { new: true },
+      );
+
+      // Auto-enrol new user into all already-opened months of every open period
+      if (user) {
+        const SubscriptionPeriod = (await import("@/models/SubscriptionPeriod"))
+          .default;
+        const MonthlyPayment = (await import("@/models/MonthlyPayment"))
+          .default;
+        const PeriodUserFee = (await import("@/models/PeriodUserFee")).default;
+
+        // Get all open periods
+        const openPeriods = await SubscriptionPeriod.find({
+          status: "open",
+        }).lean();
+
+        for (const period of openPeriods) {
+          const periodId = period._id.toString();
+
+          // Find all months already opened for this period
+          const openedMonthDocs = await MonthlyPayment.distinct("month", {
+            periodId: period._id,
+          });
+
+          if (openedMonthDocs.length === 0) continue;
+
+          // Get fee set for this user in this period (if any)
+          const feeRecord = await PeriodUserFee.findOne({
+            periodId: period._id,
+            userId: user._id,
+          }).lean();
+          const fee = feeRecord?.fee ?? 0;
+
+          // Create pending payment for each opened month
+          // (skip months already having a record for this user)
+          for (const month of openedMonthDocs) {
+            const exists = await MonthlyPayment.findOne({
+              periodId: period._id,
+              userId: user._id,
+              month,
+            });
+            if (!exists) {
+              await MonthlyPayment.create({
+                periodId: period._id,
+                userId: user._id,
+                month,
+                fee,
+                status: "pending",
+              });
+            }
+          }
+        }
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
@@ -77,4 +128,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
