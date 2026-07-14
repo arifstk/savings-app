@@ -6,7 +6,7 @@ import dbConnect from "@/lib/mongodb";
 import SubscriptionPeriod from "@/models/SubscriptionPeriod";
 import MonthlyPayment from "@/models/MonthlyPayment";
 import User from "@/models/User";
-import mongoose from "mongoose";
+import SiteSettings from "@/models/SiteSettings";
 import nodemailer from "nodemailer";
 
 // Configure the SMTP transporter
@@ -43,7 +43,7 @@ function displayMonth(ym: string) {
 
 export async function POST(req: Request) {
   try {
-    // 1. Admin Authorization Protection
+    // Admin Authorization Protection
     const session = await auth();
     if (!session?.user || session.user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -66,14 +66,13 @@ export async function POST(req: Request) {
       year: "numeric",
     });
 
-    // Generate accurate execution date inside the request scope
     const printDate = new Date().toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "long",
       year: "numeric",
     });
 
-    // 2. Gather matching database documents
+    // Gather matching database documents
     const user = (await User.findById(userId)
       .select("name email mobile")
       .lean()) as any;
@@ -92,13 +91,15 @@ export async function POST(req: Request) {
       );
     }
 
-    // 3. Fetch System Settings dynamically (Logo, Org Name, Signature)
-    const settingsColl = mongoose.connection.collection("settings");
-    const settingsDoc = await settingsColl.findOne({});
+    // Fetch System Settings via the Mongoose model (fixed — was querying a
+    // raw "settings" collection with the wrong nested shape before)
+    const settingsDoc = (await SiteSettings.findById(
+      "site-settings",
+    ).lean()) as any;
     const settings = {
-      orgName: settingsDoc?.settings?.orgName || "Taqwa Savings",
-      logoUrl: settingsDoc?.settings?.logoUrl || "",
-      managerSignatureUrl: settingsDoc?.settings?.managerSignatureUrl || "",
+      orgName: settingsDoc?.orgName || "Taqwa Savings",
+      logoUrl: settingsDoc?.logoUrl || "",
+      managerSignatureUrl: settingsDoc?.managerSignatureUrl || "",
     };
 
     const payments = await MonthlyPayment.find({ userId, periodId })
@@ -153,17 +154,17 @@ export async function POST(req: Request) {
       to: user.email,
       subject: `Subscription Payment Statement: ${period.name}`,
       html: `
-        <div style="background-color: #ffffff; font-family: Arial, sans-serif; max-width: 650px; margin: 0 auto; padding: 30px; border: 1px solid #e5e7eb;">
+        <div style="background-color: #ffffff; font-family: Arial, sans-serif; max-width: 650px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb;">
 
         <table>
-        <h2 style="color: #0d9488; margin-bottom: 5px; font-size: 20px;">Dear ${user.name},</h2>
-        <p style="color: #4b5563; font-size: 15px; margin-top: 0; line-height: 1.5;">
+        <h2 style="color: #0d9488; margin-bottom: 5px; font-size: 18px;">Dear ${user.name},</h2>
+        <p style="color: #4b5563; font-size: 13px; margin-top: 0; line-height: 1.5;">
             Your yearly statement for <strong>${period.name}</strong> has been issued. 
-            <span style="color: #0d9488;">All the money you have deposited during this period has been refunded to you on <strong>${paidDate}</strong>.</span>
+            <span style="color: #0d9488;">All the amount <span style="font-weight: bold;">Tk. ${totalPaid.toLocaleString("en-BD", { minimumFractionDigits: 2 })}</span> that you have deposited during this period has been refunded to you on <strong>${paidDate}</strong>.</span>
           </p>
         </table>
           
-          <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom: 1px solid #1f2937; padding-bottom: 8px; margin-bottom: 20px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom: 1px solid #1f2937; padding-bottom: 2px; margin-bottom: 6px;">
             <tr>
               <td align="left" valign="middle">
                 <table cellpadding="0" cellspacing="0">
@@ -190,7 +191,7 @@ export async function POST(req: Request) {
             </tr>
           </table>
 
-          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 20px; margin-bottom: 24px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 20px; margin-bottom: 20px;">
             <tr>
               <td width="33.33%" valign="top">
                 <p style="margin: 0 0 2px 0; font-size: 12px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;">Name</p>
@@ -208,7 +209,7 @@ export async function POST(req: Request) {
           </table>
 
 
-          <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-bottom: 24px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-bottom: 20px;">
             <thead>
               <tr style="background-color: #1f2937; color: #ffffff;">
                 <th align="left" style="padding: 10px 16px; font-size: 12px; font-weight: 600; width: 40px; font-family: Arial, sans-serif;">S.I</th>
@@ -223,8 +224,8 @@ export async function POST(req: Request) {
             </tbody>
             <tfoot>
               <tr style="background-color: #1f2937; color: #ffffff;">
-                <td colspan="3" align="right" style="padding: 12px 16px; font-size: 14px; font-weight: bold; font-family: Arial, sans-serif;">Total Paid =</td>
-                <td align="right" style="padding: 12px 16px; font-size: 14px; font-weight: bold; font-family: Arial, sans-serif;">
+                <td colspan="3" align="right" style="padding: 10px 16px; font-size: 13px; font-weight: bold; font-family: Arial, sans-serif;">Total Paid =</td>
+                <td align="right" style="padding: 10px 16px; font-size: 13px; font-weight: bold; font-family: Arial, sans-serif;">
                   Tk. ${totalPaid.toLocaleString("en-BD", { minimumFractionDigits: 2 })}
                 </td>
                 <td></td>
@@ -273,4 +274,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
