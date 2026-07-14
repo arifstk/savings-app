@@ -233,27 +233,136 @@ export async function POST(req: Request) {
             </tfoot>
           </table>
 
-          <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #e5e7eb; padding-top: 24px; margin-top: 40px;">
-            <tr>
-              <td align="left" valign="bottom" style="font-size: 14px; color: #4b5563; font-family: Arial, sans-serif; padding-bottom: 4px;">
-                <p style="margin: 0; font-weight: 500;">Date: ${printDate}</p>
-                <p style="margin: 4px 0 0 0; font-size: 12px; color: #9ca3af;">Member: ${user.name}</p>
-              </td>
-              <td align="center" valign="bottom" style="width: 200px;">
-                ${
-                  settings.managerSignatureUrl
-                    ? `<div style="margin-bottom: 8px;">
-                      <img src="${settings.managerSignatureUrl}" alt="Signature" width="130" height="52" style="display: block; margin: 0 auto; object-fit: contain;" />
-                     </div>`
-                    : `<div style="height: 52px; margin-bottom: 8px;"></div>`
-                }
-                <div style="border-top: 1px solid #1f2937; padding-top: 6px;">
-                  <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1f2937; font-family: Arial, sans-serif;">Manager / Admin</p>
-                  <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280; font-family: Arial, sans-serif;">${settings.orgName}</p>
+          <table
+              width="100%"
+              cellpadding="0"
+              cellspacing="0"
+              style="border-top:1px solid #e5e7eb;padding-top:24px;margin-top:40px;"
+            >
+              <tr>
+
+                <!-- Left -->
+                <td width="25%" valign="bottom">
+                  <p style="margin:0;font-size:14px;font-weight:500;color:#4b5563;">
+                    Date: ${printDate}
+                  </p>
+
+                  <p style="margin:4px 0 0;font-size:12px;color:#9ca3af;">
+                    Member: ${user.name}
+                  </p>
+                </td>
+
+              <!-- Middle (Seal) -->
+            <td
+              width="50%"
+              align="center"
+              valign="middle"
+              style="padding:0;
+              -webkit-transform: rotate(30deg);
+              -ms-transform: rotate(30deg);
+              transform: rotate(30deg);
+              "
+            >
+
+              <div
+                style="
+                  display:inline-block;
+                  width:120px;
+                  background:#ffffff;
+                  border:4px solid #374151;
+                  color:#374151;
+                  font-family:Arial,sans-serif;
+                  font-weight:bold;
+                  text-align:center;
+                  text-transform:uppercase;
+                  letter-spacing:1px;
+                  padding:2px;
+                  line-height:1;
+                "
+              >
+
+                <div
+                  style="
+                    font-size:10px;
+                    margin:0;
+                    padding:0;
+                    line-height:1;
+                  "
+                >
+                  ${settings.orgName}
                 </div>
-              </td>
-            </tr>
-          </table>
+
+                <div
+                  style="
+                    font-size:19px;
+                    border-top:3px solid #374151;
+                    border-bottom:3px solid #374151;
+                    margin:2px 0;
+                    padding:2px 0;
+                    line-height:1;
+                    white-space:wrap;
+                  "
+                >
+                  REFUNDED
+                  <span
+                    style="
+                      font-size:8px;
+                      font-weight: 600;
+                      text-align: right;
+                      display: block;
+                      align-self: flex-end;
+                    "
+                  >
+                    to member's
+                  </span>
+                </div>
+
+                <div
+                  style="
+                    font-size:11px;
+                    margin:0;
+                    padding:0;
+                    line-height:1;
+                    color:#f59e0b;
+                  "
+                >
+                  ${paidDate}
+                </div>
+
+              </div>
+
+            </td>
+
+    <!-- Right -->
+    <td width="25%" align="center" valign="bottom">
+
+      ${
+        settings.managerSignatureUrl
+          ? `<div style="margin-bottom:8px;">
+              <img
+                src="${settings.managerSignatureUrl}"
+                width="130"
+                height="52"
+                style="display:block;margin:0 auto;"
+              />
+            </div>`
+          : ``
+      }
+
+      <div style="border-top:1px solid #1f2937;padding-top:6px;">
+        <p style="margin:0;font-size:14px;font-weight:600;color:#1f2937;">
+          Manager / Admin
+        </p>
+
+        <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">
+          ${settings.orgName}
+        </p>
+      </div>
+
+    </td>
+
+  </tr>
+</table>
 
         </div>
       `,
