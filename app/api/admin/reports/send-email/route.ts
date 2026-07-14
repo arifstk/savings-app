@@ -152,7 +152,7 @@ export async function POST(req: Request) {
     const mailOptions = {
       from: `"${settings.orgName}" <${process.env.EMAIL_FROM}>`,
       to: user.email,
-      subject: `Subscription Payment Statement: ${period.name}`,
+      subject: `Yearly Deposit Statement: ${period.name}`,
       html: `
         <div style="background-color: #ffffff; font-family: Arial, sans-serif; max-width: 650px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb;">
 
@@ -323,7 +323,7 @@ export async function POST(req: Request) {
                     margin:0;
                     padding:0;
                     line-height:1;
-                    color:#f59e0b;
+                    color:blue;
                   "
                 >
                   ${paidDate}
