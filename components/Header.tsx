@@ -9,15 +9,26 @@ import MobileNav from "./MobileNav";
 import Logo from "./Logo";
 import { usePathname } from "next/navigation";
 
+// Reusable underline markup component hoisted outside to prevent render-time re-creation
+const NavUnderline = ({ isActive }: { isActive: boolean }) => (
+  <>
+    <span
+      className={`absolute -bottom-0.5 right-1/2 h-0.5 bg-teal-600 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
+        }`}
+    />
+    <span
+      className={`absolute -bottom-0.5 left-1/2 h-0.5 bg-teal-600 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
+        }`}
+    />
+  </>
+);
+
 const Header = () => {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const role = session?.user?.role ?? null;
   const pathname = usePathname();
-
-  // Hide header on print pages
-  if (pathname.endsWith("/print")) return null;
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -29,6 +40,9 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Hide header on print pages (Placed BELOW all hooks to obey React hook rules)
+  if (pathname.endsWith("/print")) return null;
+
   // True only when image is a real non-empty URL
   const hasImage = !!session?.user?.image && session.user.image.trim() !== "";
 
@@ -39,21 +53,6 @@ const Header = () => {
   const linkStyles = (isActive: boolean) =>
     `relative group text-sm font-medium transition-colors duration-200 py-1.5 px-1 ${isActive ? "text-teal-600 font-semibold" : "text-slate-600 hover:text-slate-900"
     }`;
-
-  // Reusable underline markup component to avoid repetitive code
-  const NavUnderline = ({ isActive }: { isActive: boolean }) => (
-    <>
-      <span
-        className={`absolute -bottom-0.5 right-1/2 h-0.5 bg-teal-600 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
-          }`}
-      />
-      <span
-        className={`absolute -bottom-0.5 left-1/2 h-0.5 bg-teal-600 transition-all duration-300 ease-out ${isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
-          }`}
-      />
-    </>
-  );
-
 
   return (
     <div className="top-0 left-0 w-full sticky z-500 flex items-center justify-between border-b bg-white border-gray-300 shadow-lg py-1">
@@ -103,7 +102,7 @@ const Header = () => {
             <Link
               href="/admin"
               onClick={() => setOpen(false)}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-linear-to-r from-teal-500 to-cyan-500 border border-violet-500/30 text-white text-xs font-semibold  transition-all duration-200"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-linear-to-r from-teal-500 to-cyan-500 border border-violet-500/30 text-white text-xs font-semibold transition-all duration-200"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
@@ -191,8 +190,8 @@ const Header = () => {
                         </p>
                         <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
                         <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${session.user.role === "admin"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-gray-100 text-gray-600"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-gray-100 text-gray-600"
                           }`}>
                           {session.user.role === "admin" ? "Admin" : "User"}
                         </span>
