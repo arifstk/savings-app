@@ -1,5 +1,4 @@
-// pages/members/index.tsx
-
+// pages/members/page.tsx
 
 "use client";
 
@@ -45,7 +44,9 @@ export default function OurMembersPage() {
   }, []);
 
   useEffect(() => {
-    if (status === "authenticated") load();
+    if (status === "authenticated") {
+      load();
+    }
   }, [status, load]);
 
   const filtered = members.filter(m =>
@@ -223,8 +224,8 @@ function MemberCard({ member, index }: { member: Member; index: number }) {
 
           {member.mobile && (() => {
             const cleaned = member.mobile.replace(/\D/g, "");
-            const formattedWhatsAppNumber = cleaned.startsWith("0") 
-              ? `880${cleaned.slice(1)}` 
+            const formattedWhatsAppNumber = cleaned.startsWith("0")
+              ? `880${cleaned.slice(1)}`
               : cleaned;
 
             return (
