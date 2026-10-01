@@ -51,7 +51,6 @@ const deleteHttpCookie = (name: string) => {
 };
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
-  // Initialize state lazily from localStorage to avoid cascading render warnings
   const [status, setStatus] = useState<ConsentStatus>(() => {
     if (typeof window === "undefined") return "pending";
     const stored = localStorage.getItem(STORAGE_KEY) as ConsentStatus | null;

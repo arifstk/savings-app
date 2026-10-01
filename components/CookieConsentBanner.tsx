@@ -3,9 +3,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useCookieConsent } from "@/context/CookieConsentContext";
-import { Cookie } from "lucide-react";
+import { Cookie, ShieldCheck } from "lucide-react";
 
-const DELAY_MS = 4000;
+const DELAY_MS = 3000;
 
 export default function CookieConsentBanner() {
   const { status, accept, reject } = useCookieConsent();
@@ -24,23 +24,45 @@ export default function CookieConsentBanner() {
   if (status !== "pending" || !visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-teal-800/90 text-white animate-in slide-in-from-bottom duration-300">
-      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-3 flex flex-row items-center justify-between gap-1 sm:gap-3">
-        <p className="flex sm:items-center gap-2 text-xs sm:text-sm md:text-md text-neutral-200">
-          <Cookie size={18} />  <span>This site uses cookies to personalize your experience.</span>
-        </p>
-        <div className="flex gap-3 shrink-0">
+    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 animate-in fade-in slide-in-from-bottom-5 duration-500">
+      <div className="relative overflow-hidden rounded-2xl bg-neutral-900/95 backdrop-blur-xl border border-neutral-800 p-5 text-white shadow-2xl ring-1 ring-white/10">
+
+        {/* Subtle decorative background glow */}
+        <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-teal-500/10 blur-2xl pointer-events-none" />
+        <div className="absolute -left-12 -bottom-12 h-32 w-32 rounded-full bg-violet-500/10 blur-2xl pointer-events-none" />
+
+        <div className="flex items-start gap-3.5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400">
+            <Cookie size={20} />
+          </div>
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold tracking-wide text-neutral-100 flex items-center gap-1.5">
+                Cookie Preferences <ShieldCheck size={14} className="text-teal-400" />
+              </h3>
+            </div>
+            <p className="text-xs text-neutral-400 leading-relaxed">
+              We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. Read our{" "}
+              <a href="/privacy-policy" className="text-teal-400 underline underline-offset-2 hover:text-teal-300 transition-colors">
+                Privacy Policy
+              </a>.
+            </p>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mt-4 flex items-center gap-2.5 pt-2 border-t border-neutral-800/80">
           <button
             onClick={accept}
-            className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm rounded-xl bg-white text-neutral-900 hover:bg-neutral-200 transform transition duration-300 ease-in-out cursor-pointer font-medium"
+            className="flex-1 rounded-xl bg-teal-600 hover:bg-teal-500 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            Accept
+            Accept All
           </button>
           <button
             onClick={reject}
-            className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm rounded-xl border border-neutral-400 hover:bg-teal-900 transform transition duration-300 ease-in-out cursor-pointer"
+            className="flex-1 rounded-xl bg-neutral-800 hover:bg-neutral-700 py-2 text-xs font-medium text-neutral-300 transition-all duration-200 active:scale-95 cursor-pointer border border-neutral-700/50"
           >
-            Reject
+            Reject Optional
           </button>
         </div>
       </div>
